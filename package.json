@@ -1,0 +1,13 @@
+{
+  "name": "chemistry-play-model",
+  "version": "0.2.0-draft.1",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "preview": "node tools/serve-local.js",
+    "test": "node src/dev/baseline.js",
+    "test:transfer": "node --test tests/transfer.test.js",
+    "test:browser": "node tools/browser-smoke.cjs"
+  }
+}

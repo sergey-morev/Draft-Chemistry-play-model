@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chemistry Play Model</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="menubar">
+      <h1><i data-lucide="atom"></i>Chemistry Play Model</h1>
+      <details class="app-menu"><summary>Проект</summary><div class="menu-items">
+        <button id="saveModel"><i data-lucide="save"></i>Сохранить модель</button>
+        <button id="openModel"><i data-lucide="folder-open"></i>Открыть модель</button>
+        <button id="exportSvg"><i data-lucide="image-down"></i>Экспорт схемы SVG</button>
+      </div></details>
+      <details class="app-menu"><summary>Вид</summary><div class="menu-items">
+        <button id="toggleLibrary">Библиотека элементов</button>
+        <button id="toggleInspector">Инспектор</button>
+        <button id="resetLayout">Сбросить расположение</button>
+      </div></details>
+      <button class="menu-command" id="menuReference">Справочник</button>
+      <span class="menubar-spacer"></span>
+      <span class="edition">Учебная лаборатория</span>
+    </header>
+
+    <header class="topbar">
+      <form class="formula-editor" id="formulaForm">
+        <label class="command-field"><span>Вещество</span><input id="formulaInput" list="formulaExamples" value="C6H6" placeholder="Название или формула" spellcheck="false" aria-label="Формула или название вещества"></label>
+        <button type="submit" title="Построить структуру" aria-label="Построить структуру"><i data-lucide="corner-down-left"></i></button>
+        <label class="command-field smiles-field"><span>SMILES</span><input id="smilesInput" list="smilesExamples" placeholder="CCO" spellcheck="false" aria-label="SMILES"></label>
+        <button type="button" id="buildSmiles" title="Построить SMILES" aria-label="Построить SMILES"><i data-lucide="network"></i></button>
+        <button type="button" id="lookupExternal" title="Поиск в PubChem: запрос отправляется во внешнюю базу" aria-label="Найти в PubChem"><i data-lucide="globe"></i></button>
+        <button type="button" id="swapMetal" title="Заменить Fe на Cu или Cu на Fe">Fe/Cu</button>
+        <select id="formulaPreset" aria-label="Примеры веществ">
+          <option value="">Примеры веществ</option><option value="NaCl">Поваренная соль</option><option value="глюкоза">Глюкоза</option><option value="сахароза">Сахароза</option><option value="крахмал">Крахмал</option><option value="C8H11NO2">Дофамин</option><option value="C10H12N2O">Серотонин</option><option value="18F-FDG">18F-FDG</option><option value="DOTA">DOTA</option><option value="DTPA">DTPA</option><option value="177Lu-DOTA">177Lu-DOTA</option><option value="C158H251N39O46S">Эндорфин</option><option value="C2952H4664N812O832S8Fe4">Гемоглобин (эскиз)</option>
+        </select>
+        <datalist id="formulaExamples"><option value="CH3CH2OH"></option><option value="NaCl"></option><option value="H2O"></option><option value="поваренная соль"></option><option value="серная кислота"></option><option value="оксид железа"></option><option value="углекислый газ"></option><option value="глюкоза"></option><option value="сахароза"></option><option value="крахмал"></option><option value="DOTA"></option><option value="DTPA"></option><option value="Macropa"></option><option value="177Lu-DOTA"></option></datalist>
+        <datalist id="smilesExamples"><option value="CCO"></option><option value="c1ccccc1"></option><option value="O=C=O"></option></datalist>
+      </form>
+      <div class="segmented history-buttons" aria-label="История действий">
+        <button class="mini-button" id="undoAction" title="Отменить действие" aria-label="Отменить"><i data-lucide="undo-2"></i></button>
+        <button class="mini-button" id="redoAction" title="Вернуть действие" aria-label="Вернуть"><i data-lucide="redo-2"></i></button>
+      </div>
+      <button class="action-button" id="audioToggle" title="Звук" aria-label="Звук" aria-pressed="true"><i data-lucide="volume-2"></i></button>
+    </header>
+
+    <main class="workspace">
+      <nav class="tools-rail" aria-label="Инструменты">
+        <div id="modeButtons">
+          <button class="tool-button is-active" data-mode="select" title="Выбор и перемещение" aria-label="Выбор"><i data-lucide="mouse-pointer-2"></i></button>
+          <button class="tool-button" data-mode="atom" title="Добавить атом" aria-label="Добавить атом"><i data-lucide="circle-plus"></i></button>
+          <button class="tool-button" data-mode="bond" title="Создать или изменить связь" aria-label="Связь"><i data-lucide="link-2"></i></button>
+          <button class="tool-button" data-mode="merge" title="Совместить атомы" aria-label="Совместить"><i data-lucide="merge"></i></button>
+          <button class="tool-button" data-mode="erase" title="Удалить атом или связь" aria-label="Удалить"><i data-lucide="eraser"></i></button>
+        </div>
+        <div class="rail-bottom"><button class="tool-button danger" id="clearAll" title="Очистить поле" aria-label="Очистить поле"><i data-lucide="trash-2"></i></button></div>
+      </nav>
+
+      <aside class="panel element-panel">
+        <div class="panel-head"><h2>Библиотека</h2><button class="icon-button" id="openPeriodicTable" title="Периодическая таблица" aria-label="Периодическая таблица"><i data-lucide="table-2"></i></button></div>
+        <label class="search-field"><i data-lucide="search"></i><input id="elementSearch" type="search" placeholder="Элемент или символ" autocomplete="off" aria-label="Поиск элемента"></label>
+        <div class="selected-element" id="selectedElement"></div>
+        <div class="palette-heading">Элементы <span>118 + D / T</span></div>
+        <div class="periodic-grid" id="periodicGrid" aria-label="Палитра химических элементов"></div>
+      </aside>
+
+      <section class="stage-wrap" aria-label="Рабочее поле">
+        <div class="viewport-head"><span class="document-tab"><i data-lucide="flask-conical"></i><span id="formulaLine">C6H6</span></span><span class="viewport-label">2D / структура</span>
+          <div class="segmented" id="bondButtons" aria-label="Тип связи">
+            <button class="mini-button is-active" data-order="1" title="Одинарная связь">1</button><button class="mini-button" data-order="2" title="Двойная связь">2</button><button class="mini-button" data-order="3" title="Тройная связь">3</button><button class="mini-button" data-order="aromatic" title="Ароматическая связь" aria-label="Ароматическая связь"><i data-lucide="hexagon"></i></button>
+          </div>
+          <button class="icon-button" id="runPhysics" title="Физическая релаксация" aria-label="Физическая релаксация"><i data-lucide="play"></i></button>
+          <button class="icon-button" id="centerView" title="Центрировать молекулу" aria-label="Центрировать"><i data-lucide="focus"></i></button>
+        </div>
+        <svg id="stage" viewBox="0 0 1000 720" role="img" aria-label="Молекулярный редактор">
+          <defs><filter id="atomShadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#102033" flood-opacity="0.12"></feDropShadow></filter></defs>
+          <rect class="stage-bg" x="0" y="0" width="1000" height="720"></rect>
+          <g class="grid-lines" id="gridLines"></g><g id="bondLayer"></g><g id="atomLayer"></g><g id="effectLayer"></g>
+        </svg>
+        <div id="reactionFlash" class="reaction-flash" aria-live="polite"></div>
+        <div class="status-rail">
+          <div class="status-meter"><span>Учебная стабильность</span><strong id="stabilityValue">0%</strong><div class="meter-track"><i id="stabilityBar"></i></div></div>
+          <div class="status-meter"><span>Напряжение схемы</span><strong id="energyValue">0.0</strong><div class="meter-track energy"><i id="energyBar"></i></div></div>
+        </div>
+      </section>
+
+      <aside class="panel inspector-panel">
+        <div class="panel-head"><h2>Инспектор</h2><span id="stabilityLabel" class="pill">модель</span></div>
+        <section class="metric-grid"><div><span>Масса</span><strong id="massValue">0</strong></div><div><span>Заряд</span><strong id="chargeValue">0</strong></div><div><span>Атомы</span><strong id="atomCount">0</strong></div><div><span>Связи</span><strong id="bondCount">0</strong></div></section>
+        <div class="panel-tabs" role="tablist" aria-label="Инспектор">
+          <button role="tab" aria-selected="true" data-inspector-tab="compound">Вещество</button><button role="tab" aria-selected="false" data-inspector-tab="selection">Выбор</button><button role="tab" aria-selected="false" data-inspector-tab="bonds">Связи</button><button role="tab" aria-selected="false" data-inspector-tab="properties">Свойства</button>
+        </div>
+        <div class="inspector-content">
+          <section data-inspector-page="compound" role="tabpanel">
+            <div class="section-title with-action"><span>Соединение</span><button id="openReference" class="tiny-action" title="Открыть справочник"><i data-lucide="book-open"></i>Справочник</button></div>
+            <div id="compoundInfo" class="compound-info"></div>
+            <div id="validationSummary"></div>
+          </section>
+          <section class="selection-box" data-inspector-page="selection" role="tabpanel" hidden>
+            <div class="section-title">Выбранный объект</div><div id="selectionInfo" class="selection-info"></div>
+            <div class="tuning-row"><span>Заряд</span><button id="chargeMinus" title="Уменьшить заряд" aria-label="Уменьшить заряд"><i data-lucide="minus"></i></button><button id="chargePlus" title="Увеличить заряд" aria-label="Увеличить заряд"><i data-lucide="plus"></i></button></div>
+            <div class="tuning-row"><span>Валентность</span><button id="valenceMinus" title="Уменьшить валентность">V−</button><button id="valencePlus" title="Увеличить валентность">V+</button></div>
+            <div class="tuning-row"><span>Изотоп (A)</span><button id="isotopeMinus" title="Уменьшить массовое число">A−</button><button id="isotopePlus" title="Увеличить массовое число">A+</button></div>
+            <div class="tuning-row"><span>Обогащение</span><button id="enrichMinus" title="Уменьшить долю изотопа">%−</button><button id="enrichPlus" title="Увеличить долю изотопа">%+</button></div>
+            <div class="inline-actions"><button id="resetAtomTuning" title="Сбросить настройки"><i data-lucide="rotate-ccw"></i></button><button id="deleteSelection" class="danger-soft" title="Удалить выбранное"><i data-lucide="trash-2"></i></button></div>
+          </section>
+          <section data-inspector-page="bonds" role="tabpanel" hidden><div class="section-title">Атомные связи</div><div class="bond-list" id="atomReports"></div></section>
+          <section data-inspector-page="properties" role="tabpanel" hidden><div class="section-title">Свойства и стабилизация</div><div class="issue-list" id="issueList"></div></section>
+        </div>
+      </aside>
+      <div class="panel-splitter splitter-left" data-split="left" role="separator" aria-label="Размер библиотеки" aria-orientation="vertical" tabindex="0"></div>
+      <div class="panel-splitter splitter-right" data-split="right" role="separator" aria-label="Размер инспектора" aria-orientation="vertical" tabindex="0"></div>
+    </main>
+
+    <footer class="reaction-dock">
+      <div class="dock-resizer" data-split="bottom" role="separator" aria-label="Высота панели процессов" aria-orientation="horizontal" tabindex="0"></div>
+      <div class="dock-toolbar">
+        <div class="panel-tabs" role="tablist" aria-label="Панель процессов"><button role="tab" aria-selected="true" data-dock-tab="fragments">Фрагменты</button><button role="tab" aria-selected="false" data-dock-tab="reactions">Реакции</button><button role="tab" aria-selected="false" data-dock-tab="catalysts">Катализаторы</button><button role="tab" aria-selected="false" data-dock-tab="isotopes">Изотопы</button></div>
+        <div class="quick-actions"><button class="chip strong-chip" id="expandMolecule" title="Развернуть молекулу"><i data-lucide="unfold-horizontal"></i>Схема</button><button class="chip strong-chip" id="combineMolecules" title="Соединить молекулы"><i data-lucide="combine"></i>Соединить</button><button class="chip strong-chip" id="reactAll"><i data-lucide="zap"></i>Реакция</button></div>
+      </div>
+      <div class="dock-content">
+        <div class="dock-pages">
+          <div class="dock-section" data-dock-page="fragments" role="tabpanel"><button class="chip" data-fragment="benzene">Бензол</button><button class="chip" data-fragment="ring5">C5-кольцо</button><button class="chip" data-fragment="cyclohexane">Циклогексан</button><button class="chip" data-fragment="ring7">C7-кольцо</button><button class="chip" data-fragment="n4ring">N4-кольцо</button><button class="chip" data-fragment="ethanol">EtOH</button><button class="chip" data-fragment="water">H2O</button><button class="chip" data-fragment="methane">CH4</button><button class="chip" data-fragment="dota">DOTA</button><button class="chip" data-fragment="dtpa">DTPA</button><button class="chip" data-fragment="macropa">Macropa</button><button class="chip" data-fragment="fdg">18F-FDG</button><button class="chip" data-fragment="radioligand">Мишень / линкер / DOTA</button><button class="chip" id="toggleBenzene" title="Изменить представление бензольных связей">Ароматические связи</button></div>
+          <div class="dock-section" id="reactionButtons" data-dock-page="reactions" role="tabpanel" hidden><button class="chip" id="chelateMetal">Металл в центр</button><button class="chip" id="collapseGroups">Свернуть группы</button><button class="chip" id="deliveryDemo">Доставка к мишени</button><button class="chip" id="nuclearDemo">Ядерная демонстрация</button></div>
+          <div class="dock-section" id="catalystButtons" data-dock-page="catalysts" role="tabpanel" hidden></div>
+          <div class="dock-section" id="isotopeButtons" data-dock-page="isotopes" role="tabpanel" hidden></div>
+        </div>
+        <section class="journal-panel"><div class="section-title">Журнал процессов</div><div class="reaction-log" id="reactionLog" aria-live="polite"></div></section>
+      </div>
+    </footer>
+    <div class="app-status"><span id="workspaceStatus" aria-live="polite">Готово</span><span id="databaseStatus" class="db-status">Локальная база</span><span>2D · учебная оценка</span></div>
+  </div>
+  <input type="file" id="modelFile" accept=".json,application/json" hidden>
+  <div id="contextMenu" class="context-menu" hidden></div>
+  <div id="referenceModal" class="reference-modal" hidden>
+    <div class="reference-dialog" role="dialog" aria-modal="true" aria-labelledby="referenceTitle">
+      <header><div><span class="eyebrow">Справочник лаборатории</span><h2 id="referenceTitle">Свойства вещества</h2></div><button id="closeReference" class="modal-close" aria-label="Закрыть"><i data-lucide="x"></i></button></header>
+      <div id="referenceBody" class="reference-body"></div>
+      <span class="resize-handle resize-n" data-resize="n"></span><span class="resize-handle resize-e" data-resize="e"></span><span class="resize-handle resize-s" data-resize="s"></span><span class="resize-handle resize-w" data-resize="w"></span><span class="resize-handle resize-ne" data-resize="ne"></span><span class="resize-handle resize-se" data-resize="se"></span><span class="resize-handle resize-sw" data-resize="sw"></span><span class="resize-handle resize-nw" data-resize="nw"></span>
+    </div>
+  </div>
+  <dialog id="periodicDialog" aria-labelledby="periodicTitle"><header><h2 id="periodicTitle">Периодическая таблица</h2><button id="closePeriodicTable" class="icon-button" title="Закрыть" aria-label="Закрыть"><i data-lucide="x"></i></button></header><div id="periodicTableHost"></div></dialog>
+  <div id="fileLaunchNotice" hidden>Для модульной лаборатории запустите start-chemistry-play-model.bat и откройте адрес, который появится в окне запуска.</div>
+  <script>if (location.protocol === "file:") { document.getElementById("fileLaunchNotice").hidden = false; }</script>
+  <script src="data/substances.common.ru.js"></script>
+  <script src="vendor/lucide.min.js"></script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

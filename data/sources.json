@@ -1,0 +1,104 @@
+{
+  "schema": "chem-lab.sources.v1",
+  "purpose": "Кандидаты внешних источников данных. Этот файл не импортирует чужие данные автоматически.",
+  "sources": [
+    {
+      "id": "local-guide",
+      "name": "Chem Lab local guide topics",
+      "url": "data embedded in app.js and data/*.json",
+      "license": "CC0-1.0 for this project",
+      "status": "active",
+      "notes": [
+        "Учебные темы написаны специально для этой песочницы.",
+        "Это объяснения и игровые задания, не лабораторные протоколы."
+      ]
+    },
+    {
+      "id": "common-substances-ru",
+      "name": "Common Russian substance dictionary",
+      "url": "data/substances.common.ru.json",
+      "license": "CC0-1.0 style educational dataset for this project",
+      "status": "active",
+      "notes": [
+        "Короткие фактические формулы и оригинальные учебные заметки.",
+        "JS-копия рядом нужна для локального запуска через file://, где JSON-fetch может блокироваться."
+      ]
+    },
+    {
+      "id": "radiopharma-background",
+      "name": "IAEA/NCI/FDA public radiopharmaceutical background",
+      "url": "https://www.iaea.org/topics/radionuclide-therapy; https://www.cancer.gov/publications/dictionaries/cancer-drug/def/lutetium-lu-177-dotatate; https://www.fda.gov/drugs/drug-trials-snapshots/drug-trials-snapshots-pluvicto",
+      "status": "reference-only",
+      "notes": [
+        "Использовано только для высокоуровневой учебной справки: радиофармпрепарат, хелатор, мишень, радионуклид.",
+        "В приложение не добавлены медицинские дозы, протоколы синтеза или инструкции применения."
+      ]
+    },
+    {
+      "id": "opengameart-cc0-audio",
+      "name": "OpenGameArt CC0 audio",
+      "url": "https://opengameart.org/content/ui-sounds-0",
+      "license": "CC0 for selected assets only; each asset page must be checked",
+      "status": "candidate",
+      "notes": [
+        "Подходит для будущих UI/реакционных звуков.",
+        "В текущей версии звуки сгенерированы локально и не копируют сторонние файлы."
+      ]
+    },
+    {
+      "id": "kenney-audio",
+      "name": "Kenney audio assets",
+      "url": "https://www.kenney.nl/assets",
+      "license": "CC0 for many Kenney asset packs; check exact pack page",
+      "status": "candidate",
+      "notes": [
+        "Хороший источник безопасных игровых звуков при сохранении ссылки на пакет.",
+        "Не импортировано автоматически."
+      ]
+    },
+    {
+      "id": "periodic-table-json",
+      "name": "Bowserinator/Periodic-Table-JSON",
+      "url": "https://github.com/Bowserinator/Periodic-Table-JSON",
+      "license": "CC BY-SA 3.0 Unported",
+      "licenseUrl": "https://github.com/Bowserinator/Periodic-Table-JSON/blob/master/LICENSE.md",
+      "status": "candidate",
+      "notes": [
+        "Можно использовать для расширения таблицы элементов.",
+        "При прямом копировании данных нужна атрибуция и учет ShareAlike."
+      ]
+    },
+    {
+      "id": "global-chem",
+      "name": "Global-Chem/global-chem",
+      "url": "https://github.com/Global-Chem/global-chem",
+      "license": "MPL-2.0",
+      "status": "candidate",
+      "notes": [
+        "Словарь common chemical names -> SMILES/SMARTS.",
+        "Перед копированием конкретных списков нужно сохранить лицензионные уведомления и проверить источники узлов."
+      ]
+    },
+    {
+      "id": "pubchem-pug-rest",
+      "name": "PubChem PUG REST",
+      "url": "https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest",
+      "status": "online-api-candidate",
+      "security": [
+        "Онлайн-запросы раскрывают введенные пользователем вещества внешнему сервису PubChem.",
+        "Нужен лимит запросов; PubChem просит не больше 5 запросов в секунду.",
+        "Нужен таймаут и кэширование, чтобы не дергать API повторно."
+      ]
+    },
+    {
+      "id": "chebi",
+      "name": "ChEBI",
+      "url": "https://www.ebi.ac.uk/chebi/downloadsForward.do",
+      "status": "candidate-needs-license-review",
+      "notes": [
+        "Подходит для биомолекул, синонимов и классификаций.",
+        "Перед импортом надо отдельно проверить условия скачивания и атрибуции для нужной выгрузки."
+      ]
+    }
+  ]
+}
