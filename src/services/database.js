@@ -81,7 +81,12 @@ export function applyElementOverride(record) {
   const element = elementBySymbol.get(record.symbol);
   if (!element) return;
   ["name", "mass", "valences", "electronegativity", "radius", "category", "color", "organic"].forEach((key) => {
-    if (record[key] !== undefined) element[key] = record[key];
+    if (record[key] !== undefined) {
+      if (key === "name") {
+        // Preserve inherited names for search without replacing the English display name.
+        element.legacyNames = [...new Set([...(element.legacyNames || []), record[key]])];
+      } else element[key] = record[key];
+    }
   });
   if (record.brief) element.brief = record.brief;
 }
