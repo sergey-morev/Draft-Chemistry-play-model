@@ -29,17 +29,17 @@ export function analyzeMolecule() {
     const over = usage > maxValence + 0.05;
     const under = !over && !allowed && totalValence < Math.min(...allowedValences);
     let state = "ok";
-    let detail = "валентность согласована";
+    let detail = "valence consistent within model";
 
     if (over) {
       state = "bad";
-      detail = `перегружен: ${formatNumber(usage)} > ${maxValence}`;
-      issues.push({ kind: "bad", title: `${atom.symbol}${atom.id}: превышение валентности`, text: detail });
+      detail = `overloaded: ${formatNumber(usage)} > ${maxValence}`;
+      issues.push({ kind: "bad", title: `${atom.symbol}${atom.id}: valence exceeded`, text: detail });
       score -= 26 + (usage - maxValence) * 14;
     } else if (under && allowedValences[0] !== 0) {
       state = "warn";
-      detail = `неполная оболочка: ${formatNumber(totalValence)} из ${allowedValences.join("/")}`;
-      issues.push({ kind: "warn", title: `${atom.symbol}${atom.id}: свободная валентность`, text: detail });
+      detail = `incomplete valence: ${formatNumber(totalValence)} of ${allowedValences.join("/")}`;
+      issues.push({ kind: "warn", title: `${atom.symbol}${atom.id}: unfilled valence`, text: detail });
       score -= 7;
     }
 
@@ -47,13 +47,13 @@ export function analyzeMolecule() {
     const expectedChelatedMetalCharge = Boolean(atom.chelatedBy && atom.radioisotope && atom.charge > 0);
     if (atom.charge !== 0 && !expectedChelatorCharge && !expectedChelatedMetalCharge) {
       score -= Math.min(18, Math.abs(atom.charge) * 7);
-      issues.push({ kind: "warn", title: `${atom.symbol}${atom.id}: формальный заряд ${signed(atom.charge)}`, text: "заряд влияет на устойчивость и полярность" });
+      issues.push({ kind: "warn", title: `${atom.symbol}${atom.id}: formal charge ${signed(atom.charge)}`, text: "In this model, charge affects stability and polarity." });
     }
 
     if (element.category === "noble" && usage > 0) {
       score -= 30;
       state = "bad";
-      issues.push({ kind: "bad", title: `${atom.symbol}${atom.id}: инертный газ со связью`, text: "для этой учебной модели такая связь нестабильна" });
+      issues.push({ kind: "bad", title: `${atom.symbol}${atom.id}: bonded noble gas`, text: "This bond is treated as unstable in this illustrative model." });
     }
 
     atomMap.set(atom.id, { atom, usage, implicitH, totalValence, state, detail, element, allowedValences });
@@ -69,7 +69,7 @@ export function analyzeMolecule() {
     const enA = getElement(a.symbol).electronegativity;
     const enB = getElement(b.symbol).electronegativity;
     if (enA != null && enB != null && Math.abs(enA - enB) > 1.9) {
-      issues.push({ kind: "warn", title: `${a.symbol}-${b.symbol}: сильно полярная связь`, text: `Δχ=${formatNumber(Math.abs(enA - enB))}` });
+      issues.push({ kind: "warn", title: `${a.symbol}-${b.symbol}: strongly polar bond`, text: `Δχ=${formatNumber(Math.abs(enA - enB))}` });
       score -= 2;
     }
   });
@@ -77,13 +77,13 @@ export function analyzeMolecule() {
   const aromaticRings = countAromaticRings();
   if (aromaticRings > 0) {
     score += aromaticRings * 6;
-    issues.push({ kind: "ok", title: `Ароматичность: ${aromaticRings}`, text: "делокализация повышает устойчивость кольца" });
+    issues.push({ kind: "ok", title: `Aromaticity: ${aromaticRings}`, text: "In this model, delocalization increases ring stability." });
   }
 
   const smallRingPenalty = countSmallRings() * 8;
   if (smallRingPenalty) {
     score -= smallRingPenalty;
-    issues.push({ kind: "warn", title: "Кольцевое напряжение", text: `штраф модели ${smallRingPenalty}` });
+    issues.push({ kind: "warn", title: "Ring strain (model estimate)", text: `model penalty ${smallRingPenalty}` });
   }
 
   score -= Math.min(18, strainEnergy * 0.7);
@@ -91,7 +91,7 @@ export function analyzeMolecule() {
   const freeRadioMetals = labState.atoms.filter((atom) => atom.radioisotope && isMetalAtom(atom) && !atom.chelatedBy);
   if (freeRadioMetals.length) {
     score -= 16;
-    issues.push({ kind: "warn", title: "Свободный радиометалл", text: `${freeRadioMetals.map((atom) => atom.radioisotope || isotopeLabel(atom)).join(", ")} лучше поместить в DOTA/DTPA/Macropa.` });
+    issues.push({ kind: "warn", title: "Unchelated radiometal", text: `${freeRadioMetals.map((atom) => atom.radioisotope || isotopeLabel(atom)).join(", ")} — model suggestion: place in DOTA/DTPA/Macropa.` });
   }
 
   labState.atoms.filter((atom) => atom.chelatedBy).forEach((metal) => {
@@ -99,9 +99,9 @@ export function analyzeMolecule() {
     const metalLabel = metal.radioisotope || metal.structLabel || metal.symbol;
     if (coordination < 4) {
       score -= 10;
-      issues.push({ kind: "warn", title: `${metalLabel}: слабая координация`, text: `координационных связей ${coordination}; для устойчивой учебной клетки обычно нужно 4-8.` });
+      issues.push({ kind: "warn", title: `${metalLabel}: weak coordination in model`, text: `coordination bonds: ${coordination}; this illustrative model normally expects 4-8 for a stable coordination cage.` });
     } else {
-      issues.push({ kind: "ok", title: `${metalLabel} в хелаторе`, text: `координационных связей ${coordination}; радиометалл удерживается донорной клеткой.` });
+      issues.push({ kind: "ok", title: `${metalLabel} in chelator`, text: `coordination bonds: ${coordination}; the model represents the radiometal as held by the donor cage.` });
     }
   });
 
@@ -111,7 +111,7 @@ export function analyzeMolecule() {
   const hasRadioligandIntent = labState.compoundMeta?.structure === "radioligand" || labState.atoms.some((atom) => atom.role === "linker");
   if (hasRadioligandIntent && hasChelator && hasPayload && !hasTarget) {
     score -= 4;
-    issues.push({ kind: "warn", title: "Нет блока мишени", text: "Хелатор с радиометаллом собран, но для радиолиганда можно добавить мишень и линкер кнопкой «→ Мишень»." });
+    issues.push({ kind: "warn", title: "No target block", text: "The chelator and radiometal are assembled. For a radioligand sketch, add a target and linker with the “Target / linker / DOTA” button." });
   }
 
   labState.atoms.forEach((atom) => {
@@ -134,7 +134,7 @@ export function analyzeMolecule() {
 
   if (labState.atoms.length === 0) {
     score = 0;
-    issues.push({ kind: "warn", title: "Нет атомов", text: "добавьте элемент из таблицы" });
+    issues.push({ kind: "warn", title: "No atoms", text: "Add an element from the periodic table." });
   }
 
   return {

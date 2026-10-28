@@ -38,14 +38,14 @@ export function signed(value, zero = false) {
 }
 
 export function bondName(order) {
-  if (order === "hbond") return "водородная/ион-дипольная";
-  if (order === "solvation") return "сольватационная";
-  if (order === "ionic") return "ионная";
-  if (order === "coordination") return "координационная";
-  if (order === "aromatic") return "ароматическая";
-  if (order === 1) return "одинарная";
-  if (order === 2) return "двойная";
-  if (order === 3) return "тройная";
+  if (order === "hbond") return "hydrogen / ion–dipole";
+  if (order === "solvation") return "solvation";
+  if (order === "ionic") return "ionic";
+  if (order === "coordination") return "coordination";
+  if (order === "aromatic") return "aromatic";
+  if (order === 1) return "single";
+  if (order === 2) return "double";
+  if (order === 3) return "triple";
   return String(order);
 }
 
@@ -66,8 +66,8 @@ export function stabilityColor(score) {
 }
 
 export function stabilityText(score) {
-  if (score >= 86) return "стабильна";
-  if (score >= 66) return "условно стабильна";
-  if (score >= 44) return "напряжена";
-  return "нестабильна";
+  if (score >= 86) return "high heuristic stability";
+  if (score >= 66) return "conditional heuristic stability";
+  if (score >= 44) return "strained in model";
+  return "low heuristic stability";
 }

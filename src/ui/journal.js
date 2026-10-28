@@ -49,7 +49,7 @@ export function buildReactionAdvice(analysis, result) {
   const overValence = [...analysis.atomMap.values()].find((report) => report.usage > Math.max(...report.allowedValences) + 0.05);
   const charged = [...analysis.atomMap.values()].find((report) => report.atom.charge !== 0);
   const underFilled = [...analysis.atomMap.values()].find((report) => report.state === "warn" && report.implicitH === 0);
-  const polarIssue = analysis.issues.find((issue) => issue.title.includes("полярная"));
+  const polarIssue = analysis.issues.find((issue) => issue.title.includes("strongly polar bond"));
 
   if (analysis.score >= 86) {
     advice.push("Модель выглядит устойчивой: можно добавлять функциональные группы и сравнивать, как меняется полярность.");
