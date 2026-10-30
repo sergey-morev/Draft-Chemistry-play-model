@@ -31,7 +31,7 @@ export function logReaction(result, before = null, after = null) {
     <article class="reaction-card ${result.success ? state : "blocked"}">
       <div class="reaction-card-head">
         <strong>${escapeHtml(result.title)}</strong>
-        <span>${result.success ? stabilityText(after?.score || 0) : "не выполнено"}</span>
+        <span>${result.success ? stabilityText(after?.score || 0) : "not performed"}</span>
       </div>
       <p>${escapeHtml(result.summary)}</p>
       ${equation}
@@ -52,32 +52,32 @@ export function buildReactionAdvice(analysis, result) {
   const polarIssue = analysis.issues.find((issue) => issue.title.includes("strongly polar bond"));
 
   if (analysis.score >= 86) {
-    advice.push("Модель выглядит устойчивой: можно добавлять функциональные группы и сравнивать, как меняется полярность.");
+    advice.push("The model's heuristic score is high; try adding functional groups and compare the displayed polarity.");
   } else if (analysis.score >= 66) {
-    advice.push("Состояние условно стабильное: проверьте длины связей и запустите релаксацию кнопкой ▶.");
+    advice.push("The heuristic score is intermediate; check drawn bond lengths and use Relax graph layout.");
   } else if (analysis.score >= 44) {
-    advice.push("Молекула напряжена: уменьшите порядок перегруженных связей или добавьте H к свободным валентностям.");
+    advice.push("The model flags strain; reduce overloaded bond orders or add H at available valences.");
   } else {
-    advice.push("Молекула нестабильна: сначала уберите лишние связи, затем нейтрализуйте заряд.");
+    advice.push("The heuristic score is low; remove excess bonds, then review charge for the intended structure.");
   }
 
   if (overValence) {
-    advice.push(`${overValence.atom.symbol}${overValence.atom.id}: снизьте порядок одной связи или удалите лишний заместитель.`);
+    advice.push(`${overValence.atom.symbol}${overValence.atom.id}: lower a bond order or remove an extra substituent.`);
   }
   if (charged) {
-    advice.push(`${charged.atom.symbol}${charged.atom.id}: кнопками +/− можно вернуть заряд ближе к 0.`);
+    advice.push(`${charged.atom.symbol}${charged.atom.id}: use +/− to adjust charge if appropriate for the intended structure.`);
   }
   if (underFilled) {
-    advice.push(`${underFilled.atom.symbol}${underFilled.atom.id}: добавьте H или создайте связь с подходящим атомом.`);
+    advice.push(`${underFilled.atom.symbol}${underFilled.atom.id}: add H or make a bond to a suitable atom.`);
   }
   if (polarIssue) {
-    advice.push("Сильно полярные связи полезны для реакционности, но могут снижать простую оценку стабильности.");
+    advice.push("Strongly polar bonds may affect the model's heuristic score; polarity alone does not establish reactivity.");
   }
   if (analysis.aromaticRings > 0) {
-    advice.push("Ароматическое кольцо стабилизировано делокализацией; заместители лучше добавлять к свободному C-H.");
+    advice.push("The model marks this ring as aromatic; try adding substituents at available C-H positions.");
   }
   if ((analysis.counts.D || 0) + (analysis.counts.T || 0) > 0) {
-    advice.push("Изотопное обогащение меняет массу и метку положения, но не добавляет лишнюю валентность.");
+    advice.push("In this model, D/T settings change displayed mass and label placement without adding valence.");
   }
 
   return [...new Set(advice)].slice(0, 5);
