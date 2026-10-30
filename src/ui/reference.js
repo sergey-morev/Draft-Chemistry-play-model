@@ -246,12 +246,23 @@ export function guideTopicCards(analysis) {
   return guideTopics.filter((topic) => topic.match(analysis)).slice(0, 4);
 }
 
+const referenceTopicText = {
+  radiopharma: ["Radioligand and chelator", "The sketch labels conceptual radionuclide, chelator and target roles. Binding and medical effects are not established.", "Compare the modeled DOTA and 18F-FDG sketches; this is not clinical guidance."],
+  electrolytes: ["Solutions and electrolytes", "The drawing can illustrate ions and solvation; it is not a solution simulation.", "Build NaCl and H2O and inspect the illustrative ion and solvation display."],
+  aromaticity: ["Aromaticity", "The model marks some rings aromatic; this is not independent validation or a measurement of stability.", "Change modeled ring bonds and compare the heuristic score."],
+  "functional-groups": ["Functional groups", "Inspect the displayed atoms and bonds in carbon-containing structures; the model does not predict reactivity.", "Compare the illustrative H2, Br2 and H2O rules for a modeled C=C bond."],
+  metals: ["Metals and coordination", "Metal labels and coordination links are schematic and do not establish complex formation.", "Compare modeled Fe and Cu labels and charges; biological equivalence is not implied."],
+  isotopes: ["Isotopes and labels", "Isotope controls change model mass and labels; decay and enrichment are not validated.", "Compare modeled H2O and D2O, then inspect the A± mass display."],
+  stability: ["Heuristic score", "The percentage is a rule-based score, not measured chemical or thermodynamic stability; layout strain is not physical energy.", "Edit a modeled bond or charge and compare the heuristic score."]
+};
+
 export function renderGuideTopicCard(topic) {
+  const [title, text, challenge] = referenceTopicText[topic.id] || [topic.title, topic.text, topic.challenge];
   return `
     <article>
-      <strong>${escapeHtml(referenceText(topic.title))}</strong>
-      <p>${escapeHtml(referenceText(topic.text))}</p>
-      <span>${escapeHtml(referenceText(topic.challenge))}</span>
+      <strong>${escapeHtml(referenceText(title))}</strong>
+      <p>${escapeHtml(referenceText(text))}</p>
+      <span>${escapeHtml(referenceText(challenge))}</span>
     </article>
   `;
 }
