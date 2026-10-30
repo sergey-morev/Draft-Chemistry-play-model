@@ -180,6 +180,10 @@ function previewExampleGuide(analysis) {
       <h3>Teaching prompt</h3>
       <p>${escapeHtml(exercise)}</p>
     </section>
+    <section class="safety-note">
+      <h3>Scope and safety</h3>
+      <p>Exploratory teaching prototype. It is not scientifically validated and not approved for student use. It does not predict reactions or provide laboratory or clinical guidance. Other reaction, isotope, coordination and biomolecular features remain outside this preview and require review.</p>
+    </section>
     <section>
       <h3>Model checks</h3>
       <p>The ${analysis.score}% score is a rule-based heuristic, not measured chemical stability. The 2D layout and displayed strain are schematic estimates, not validated physical energy.</p>
@@ -187,10 +191,6 @@ function previewExampleGuide(analysis) {
         ${renderForceFieldCheck(analysis)}
         ${renderRdkitCheck(labState.compoundMeta?.rdkit)}
       </div>
-    </section>
-    <section class="safety-note">
-      <h3>Scope and safety</h3>
-      <p>Exploratory teaching prototype. It is not scientifically validated and not approved for student use. It does not predict reactions or provide laboratory or clinical guidance. Other reaction, isotope, coordination and biomolecular features remain outside this preview and require review.</p>
     </section>
   `;
 }
