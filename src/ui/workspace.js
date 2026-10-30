@@ -162,7 +162,7 @@ async function loadModel(event) {
     const data = JSON.parse(await file.text());
     const model = validateModelFile(data);
     Object.assign(labState, model);
-    labState.selectedAtomIds = []; labState.selectedBondId = null; labState.pendingAtomId = null; labState.compoundMeta = null;
+    labState.selectedAtomIds = []; labState.selectedBondId = null; labState.pendingAtomId = null;
     analyzeAndRender();
     logReaction("Модель загружена из локального файла.");
     setStatus("Модель открыта");
@@ -192,7 +192,21 @@ export function validateModelFile(data) {
     bondIds.add(bond.id);
     return { id: bond.id, a: bond.a, b: bond.b, order: bond.order };
   });
-  return { atoms, bonds, nextAtomId: Math.max(0,...ids) + 1, nextBondId: Math.max(0,...bondIds) + 1 };
+  return { atoms, bonds, nextAtomId: Math.max(0,...ids) + 1, nextBondId: Math.max(0,...bondIds) + 1, compoundMeta: restoreSafeCompoundMeta(model.compoundMeta) };
+}
+
+function restoreSafeCompoundMeta(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  if (["__proto__", "prototype", "constructor"].some((key) => Object.hasOwn(value, key))) return null;
+  const limits = { commonName: 160, className: 160, note: 1000, bioName: 160 };
+  const restored = {};
+  for (const [key, limit] of Object.entries(limits)) {
+    if (!Object.hasOwn(value, key)) continue;
+    const text = value[key];
+    if (typeof text !== "string" || text.length > limit || /[<>\u0000-\u001f\u007f]|https?:\/\/|javascript:/i.test(text)) return null;
+    restored[key] = text;
+  }
+  return Object.keys(restored).length ? restored : null;
 }
 
 export function setStatus(message) { document.getElementById("workspaceStatus").textContent = message; }
