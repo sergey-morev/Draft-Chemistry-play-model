@@ -7,7 +7,7 @@ export const reactions = [
   { id: "hydrogenation", label: "H2 + C=C", run: hydrogenateDoubleBond },
   { id: "bromination", label: "Br2 + C=C", run: brominateDoubleBond },
   { id: "chlorinateBenzene", label: "Cl2 + ⏣", run: chlorinateBenzene },
-  { id: "combustion", label: "O2 горение", run: combustionPreview },
+  { id: "combustion", label: "O2 combustion", run: combustionPreview },
   { id: "hydrateAlkene", label: "H2O + C=C", run: hydrateAlkene }
 ];
 
@@ -23,41 +23,41 @@ export const isotopeProcesses = [
 ];
 
 export const radioisotopePresets = [
-  { id: "lu177", label: "177Lu", symbol: "Lu", massNumber: 177, charge: 3, valence: 8, kind: "β− металл", bestChelator: "DOTA", note: "Lu-177 часто моделируют с DOTA-подобными хелаторами: металл удерживается координационными связями." },
-  { id: "y90", label: "90Y", symbol: "Y", massNumber: 90, charge: 3, valence: 8, kind: "β− металл", bestChelator: "DOTA/DTPA", note: "Y-90 — учебный пример β-излучающего металла для радиолигандов." },
-  { id: "cu67", label: "67Cu", symbol: "Cu", massNumber: 67, charge: 2, valence: 4, kind: "β− металл", bestChelator: "TETA/DOTA", note: "Cu-67 показывает, что разные металлы предпочитают разную геометрию хелатора." },
-  { id: "ac225", label: "225Ac", symbol: "Ac", massNumber: 225, charge: 3, valence: 9, kind: "α металл", bestChelator: "DOTA/Macropa", note: "Ac-225 удобно показывать как крупный α-излучающий актинид в большой клетке-хелаторе." },
-  { id: "ra223", label: "223Ra", symbol: "Ra", massNumber: 223, charge: 2, valence: 8, kind: "α металл", bestChelator: "Macropa", note: "Ra-223 крупный щёлочноземельный металл; модель подчёркивает размер и слабую ковалентность." },
-  { id: "sm153", label: "153Sm", symbol: "Sm", massNumber: 153, charge: 3, valence: 8, kind: "β− металл", bestChelator: "DTPA/DOTA", note: "Sm-153 — пример лантанидного радиометалла." },
-  { id: "sr89", label: "89Sr", symbol: "Sr", massNumber: 89, charge: 2, valence: 4, kind: "β− металл", bestChelator: "костная мишень", note: "Sr-89 в учебной модели похож на Ca/Sr и показывает идею костного накопления." },
-  { id: "i131", label: "131I", symbol: "I", massNumber: 131, charge: 0, valence: 1, kind: "β−/γ неметалл", bestChelator: "ковалентная метка", note: "I-131 обычно показывается как ковалентная метка, а не металл в клетке." },
-  { id: "at211", label: "211At", symbol: "At", massNumber: 211, charge: 0, valence: 1, kind: "α неметалл", bestChelator: "ковалентная метка", note: "At-211 — тяжёлый галоген; в песочнице это безопасная неметаллическая метка." },
-  { id: "f18", label: "18F", symbol: "F", massNumber: 18, charge: 0, valence: 1, kind: "β+ неметалл", bestChelator: "ковалентная метка", note: "F-18 удобно показывать на примере фтордезоксиглюкозы: атом F заменяет OH-группу." }
+  { id: "lu177", label: "177Lu", symbol: "Lu", massNumber: 177, charge: 3, valence: 8, kind: "β− metal", bestChelator: "DOTA", note: "Lu-177 is illustrated with a DOTA-like chelator and modeled coordination bonds; complex stability is not assessed." },
+  { id: "y90", label: "90Y", symbol: "Y", massNumber: 90, charge: 3, valence: 8, kind: "β− metal", bestChelator: "DOTA/DTPA", note: "Y-90 is a teaching example of a β-emitting metal in a radioligand sketch." },
+  { id: "cu67", label: "67Cu", symbol: "Cu", massNumber: 67, charge: 2, valence: 4, kind: "β− metal", bestChelator: "TETA/DOTA", note: "Cu-67 illustrates how different metals can favor different chelator geometries; this model does not validate a complex." },
+  { id: "ac225", label: "225Ac", symbol: "Ac", massNumber: 225, charge: 3, valence: 9, kind: "α metal", bestChelator: "DOTA/Macropa", note: "Ac-225 is shown as a large α-emitting actinide in an illustrative chelator cavity." },
+  { id: "ra223", label: "223Ra", symbol: "Ra", massNumber: 223, charge: 2, valence: 8, kind: "α metal", bestChelator: "Macropa", note: "Ra-223 is a large alkaline-earth metal; the model emphasizes size and limited covalent character." },
+  { id: "sm153", label: "153Sm", symbol: "Sm", massNumber: 153, charge: 3, valence: 8, kind: "β− metal", bestChelator: "DTPA/DOTA", note: "Sm-153 is an illustrative lanthanide radiometal." },
+  { id: "sr89", label: "89Sr", symbol: "Sr", massNumber: 89, charge: 2, valence: 4, kind: "β− metal", bestChelator: "bone-targeting concept", note: "Sr-89 is used here to discuss the concept of bone uptake; this model does not predict biological distribution." },
+  { id: "i131", label: "131I", symbol: "I", massNumber: 131, charge: 0, valence: 1, kind: "β−/γ nonmetal", bestChelator: "covalent label", note: "I-131 is shown as a covalent label in this example, not as a metal in a chelator cavity." },
+  { id: "at211", label: "211At", symbol: "At", massNumber: 211, charge: 0, valence: 1, kind: "α nonmetal", bestChelator: "covalent label", note: "At-211 is a heavy halogen, represented here only as a nonmetal label." },
+  { id: "f18", label: "18F", symbol: "F", massNumber: 18, charge: 0, valence: 1, kind: "β+ nonmetal", bestChelator: "covalent label", note: "In this fluorodeoxyglucose teaching example, F replaces an OH group; the sketch is not a validated tracer structure." }
 ];
 
 export const catalysts = [
-  { id: "none", label: "нет", hint: "без катализатора: реакции идут вручную" },
-  { id: "ni", label: "Ni", hint: "гидрирование C=C водородом" },
-  { id: "pd", label: "Pd", hint: "мягкое гидрирование C=C" },
-  { id: "pt", label: "Pt", hint: "быстрое гидрирование C=C" },
-  { id: "acid", label: "H+", hint: "кислотная гидратация алкенов" },
-  { id: "fecl3", label: "FeCl3", hint: "хлорирование ароматического кольца" },
-  { id: "brhv", label: "Br2/hν", hint: "бромирование двойных связей" }
+  { id: "none", label: "None", hint: "No catalyst selected; reactions can be applied manually." },
+  { id: "ni", label: "Ni", hint: "Illustrative C=C hydrogenation with H2." },
+  { id: "pd", label: "Pd", hint: "Illustrative mild C=C hydrogenation." },
+  { id: "pt", label: "Pt", hint: "Illustrative fast C=C hydrogenation; rate is not calculated." },
+  { id: "acid", label: "H+", hint: "Illustrative acid-catalyzed alkene hydration." },
+  { id: "fecl3", label: "FeCl3", hint: "Illustrative aromatic-ring chlorination." },
+  { id: "brhv", label: "Br2/hν", hint: "Illustrative bromination of double bonds." }
 ];
 
 export const knownSubstances = [
-  { names: ["поваренная соль", "кухонная соль", "соль", "хлорид натрия"], formula: "NaCl", smiles: "[Na+].[Cl-]", commonName: "поваренная соль", className: "ионная соль", note: "NaCl: пищевая соль, электролит, растворяется в воде с гидратацией ионов." },
-  { names: ["серная кислота", "sulfuric acid"], formula: "H2SO4", smiles: "OS(=O)(=O)O", commonName: "серная кислота", className: "минеральная кислота", note: "H2SO4: сильная кислота и дегидратирующий реагент; в реальности требует осторожности." },
-  { names: ["соляная кислота", "хлороводородная кислота"], formula: "HCl", smiles: "Cl", commonName: "соляная кислота", className: "минеральная кислота", note: "В воде это H3O+ и Cl-, а не отдельная ковалентная молекула HCl." },
-  { names: ["вода", "water"], formula: "H2O", smiles: "O", commonName: "вода", className: "растворитель", note: "H2O: полярный растворитель, образует водородные связи." },
-  { names: ["тяжелая вода", "тяжёлая вода"], formula: "D2O", smiles: "O", commonName: "тяжелая вода", className: "изотопная вода", note: "D2O содержит дейтерий вместо обычного водорода." },
-  { names: ["углекислый газ", "диоксид углерода", "carbon dioxide"], formula: "CO2", smiles: "O=C=O", commonName: "углекислый газ", className: "оксид", note: "CO2: линейный оксид углерода, продукт дыхания и горения." },
-  { names: ["оксид железа", "оксид железа 3", "оксид железа iii", "ржавчина"], formula: "Fe2O3", smiles: null, commonName: "оксид железа(III)", className: "оксид металла", note: "Fe2O3: модель ржавчины и железной руды; связь в твердом веществе ионно-ковалентная." },
-  { names: ["оксид железа 2", "оксид железа ii"], formula: "FeO", smiles: null, commonName: "оксид железа(II)", className: "оксид металла", note: "FeO: оксид железа со степенью окисления +2." },
-  { names: ["этанол", "спирт", "ethyl alcohol"], formula: "C2H6O", smiles: "CCO", commonName: "этанол", className: "спирт", note: "Этанол содержит гидроксильную группу O-H." },
-  { names: ["бензол", "benzene"], formula: "C6H6", smiles: "c1ccccc1", commonName: "бензол", className: "ароматическое", note: "Бензол стабилизирован ароматической делокализацией." },
-  { names: ["дофамин"], formula: "C8H11NO2", smiles: "NCCc1ccc(O)c(O)c1", commonName: "дофамин", className: "нейромедиатор", note: "Дофамин: катехоламин, важен для нервной системы." },
-  { names: ["серотонин"], formula: "C10H12N2O", smiles: "NCCc1c[nH]c2ccc(O)cc12", commonName: "серотонин", className: "нейромедиатор", note: "Серотонин: биогенный амин, связан с регуляцией настроения и сна." }
+  { names: ["поваренная соль", "кухонная соль", "соль", "хлорид натрия", "table salt", "sodium chloride"], formula: "NaCl", smiles: "[Na+].[Cl-]", commonName: "table salt", className: "ionic salt", note: "NaCl is a dietary salt and electrolyte; in water, its ions become hydrated." },
+  { names: ["серная кислота", "sulfuric acid"], formula: "H2SO4", smiles: "OS(=O)(=O)O", commonName: "sulfuric acid", className: "mineral acid", note: "H2SO4 is a strong acid and dehydrating reagent; real handling requires appropriate laboratory precautions." },
+  { names: ["соляная кислота", "хлороводородная кислота", "hydrochloric acid"], formula: "HCl", smiles: "Cl", commonName: "hydrochloric acid", className: "mineral acid", note: "In water, this is represented by H3O+ and Cl− rather than an isolated covalent HCl molecule." },
+  { names: ["вода", "water"], formula: "H2O", smiles: "O", commonName: "water", className: "solvent", note: "H2O is a polar solvent that can form hydrogen bonds." },
+  { names: ["тяжелая вода", "тяжёлая вода", "heavy water", "deuterium oxide"], formula: "D2O", smiles: "O", commonName: "heavy water", className: "isotopic water", note: "D2O contains deuterium in place of ordinary hydrogen." },
+  { names: ["углекислый газ", "диоксид углерода", "carbon dioxide"], formula: "CO2", smiles: "O=C=O", commonName: "carbon dioxide", className: "oxide", note: "CO2 is a linear carbon oxide associated with respiration and combustion." },
+  { names: ["оксид железа", "оксид железа 3", "оксид железа iii", "ржавчина", "iron(III) oxide"], formula: "Fe2O3", smiles: null, commonName: "iron(III) oxide", className: "metal oxide", note: "Fe2O3 is used here as a simplified model of rust and iron ore; the solid has mixed ionic and covalent character." },
+  { names: ["оксид железа 2", "оксид железа ii", "iron(II) oxide"], formula: "FeO", smiles: null, commonName: "iron(II) oxide", className: "metal oxide", note: "FeO is an iron oxide with iron in oxidation state +2." },
+  { names: ["этанол", "спирт", "ethyl alcohol", "ethanol"], formula: "C2H6O", smiles: "CCO", commonName: "ethanol", className: "alcohol", note: "Ethanol contains a hydroxyl (O-H) group." },
+  { names: ["бензол", "benzene"], formula: "C6H6", smiles: "c1ccccc1", commonName: "benzene", className: "aromatic compound", note: "Benzene is associated with aromatic electron delocalization in this model." },
+  { names: ["дофамин", "dopamine"], formula: "C8H11NO2", smiles: "NCCc1ccc(O)c(O)c1", commonName: "dopamine", className: "neurotransmitter", note: "Dopamine is a catecholamine involved in nervous-system signaling." },
+  { names: ["серотонин", "serotonin"], formula: "C10H12N2O", smiles: "NCCc1c[nH]c2ccc(O)cc12", commonName: "serotonin", className: "neurotransmitter", note: "Serotonin is a biogenic amine involved in the regulation of mood and sleep." }
 ];
 
 export const guideTopics = [

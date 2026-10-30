@@ -5,6 +5,8 @@ import { analyzeAndRender } from "../simulation/update.js";
 import { state as labState } from "../state.js";
 import { renderSelectedElement } from "../ui/elements.js";
 
+const builtInSubstances = new Set(knownSubstances);
+
 export function mergeExternalSubstanceRecords() {
   const records = typeof window !== "undefined" ? window.CHEM_LAB_EXTRA_SUBSTANCES : null;
   if (!Array.isArray(records)) return;
@@ -64,14 +66,31 @@ export async function loadJsonFile(path) {
 export function addKnownSubstance(record) {
   if (!record || !record.formula || !Array.isArray(record.names)) return;
   const normalizedNames = new Set(record.names.map(normalizeName));
-  const duplicate = knownSubstances.find((item) => item.names.some((name) => normalizedNames.has(normalizeName(name))));
+  const formulaKey = normalizeFormulaInput(record.formula).toUpperCase();
+  const duplicate = knownSubstances.find((item) =>
+    normalizeFormulaInput(item.formula).toUpperCase() === formulaKey &&
+    (!item.smiles || !record.smiles || item.smiles === record.smiles) &&
+    item.names.some((name) => normalizedNames.has(normalizeName(name)))
+  );
   if (duplicate) {
+    const names = [...duplicate.names];
+    const seen = new Set(names.map(normalizeName));
+    record.names.forEach((name) => {
+      const key = normalizeName(name);
+      if (key && !seen.has(key)) {
+        names.push(name);
+        seen.add(key);
+      }
+    });
+    const display = builtInSubstances.has(duplicate)
+      ? { commonName: duplicate.commonName, className: duplicate.className, note: duplicate.note, formula: duplicate.formula, smiles: duplicate.smiles }
+      : {};
     Object.assign(duplicate, record);
+    Object.assign(duplicate, display, { names });
   } else {
     knownSubstances.push(record);
   }
   if (record.smiles) {
-    const formulaKey = normalizeFormulaInput(record.formula).toUpperCase();
     if (!knownFormulaSmiles.has(formulaKey)) knownFormulaSmiles.set(formulaKey, record.smiles);
   }
 }
