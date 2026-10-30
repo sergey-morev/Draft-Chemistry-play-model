@@ -15,8 +15,8 @@ import { stabilityText } from "../utils/format.js";
 
 export function hydrogenateDoubleBond() {
   const bond = findBondByOrder(2, "C", "C");
-  if (!bond) return reactionResult(false, "Гидрирование не прошло", "Двойная связь C=C не найдена.", {
-    advice: ["Выберите связь между двумя C и переключите ее на двойную, затем повторите H2 + C=C."]
+  if (!bond) return reactionResult(false, "Hydrogenation not performed", "No C=C double bond was found.", {
+    advice: ["Select a bond between two C atoms, set it to double, then try H2 + C=C again."]
   });
   bond.order = 1;
   const atomA = getAtom(bond.a);
@@ -26,17 +26,17 @@ export function hydrogenateDoubleBond() {
   addAtomAttached("H", atomB.id, angle - Math.PI * 0.28, 74);
   labState.selectedAtomIds = [bond.a, bond.b];
   labState.selectedBondId = bond.id;
-  return reactionResult(true, "Гидрирование алкена", "C=C стала C-C, к двум атомам углерода добавлены H.", {
+  return reactionResult(true, "Alkene hydrogenation", "The C=C bond became C-C, with H added to each C atom in this illustrative transformation.", {
     equation: "C=C + H2 -> C-C",
-    uses: "Так насыщают растительные масла, получают алканы из алкенов и снижают реакционную способность двойных связей.",
-    advice: ["Если молекула стала перегруженной, удалите лишний H или уменьшите порядок соседней связи.", "Для каталитической версии мысленно добавьте Ni, Pd или Pt как поверхность реакции."]
+    uses: "Hydrogenation is used to saturate vegetable oils and convert alkenes to alkanes; this rule-based example omits real reaction conditions.",
+    advice: ["If the model flags an overloaded atom, remove an extra H or lower an adjacent bond order.", "For a catalytic example, consider a Ni, Pd or Pt surface; the model does not simulate it."]
   });
 }
 
 export function brominateDoubleBond() {
   const bond = findBondByOrder(2, "C", "C");
-  if (!bond) return reactionResult(false, "Бромирование не прошло", "Двойная связь C=C не найдена.", {
-    advice: ["Создайте алкен: два C и двойная связь между ними."]
+  if (!bond) return reactionResult(false, "Bromination not performed", "No C=C double bond was found.", {
+    advice: ["Build an alkene fragment with two C atoms joined by a double bond."]
   });
   bond.order = 1;
   const atomA = getAtom(bond.a);
@@ -46,17 +46,17 @@ export function brominateDoubleBond() {
   addAtomAttached("Br", atomB.id, angle - Math.PI * 0.35, 92);
   labState.selectedAtomIds = [bond.a, bond.b];
   labState.selectedBondId = bond.id;
-  return reactionResult(true, "Бромирование алкена", "Двойная связь раскрыта, Br добавлен к обоим атомам C.", {
+  return reactionResult(true, "Alkene bromination", "The C=C bond became C-C, with Br added to each C atom in this illustrative transformation.", {
     equation: "C=C + Br2 -> Br-C-C-Br",
-    uses: "Классическая качественная реакция на двойную связь: бромная вода обесцвечивается.",
-    advice: ["Если стабильность просела, проверьте валентность каждого C.", "Br тяжелый и поляризуемый: такие связи часто делают молекулу более плотной и реакционно полезной."]
+    uses: "In a qualitative test for unsaturation, bromine water can lose its color; this model does not simulate that observation.",
+    advice: ["If the heuristic score falls, check the valence shown for each C atom.", "Br is relatively heavy and polarizable; review the resulting C-Br bonds rather than inferring reactivity from this model."]
   });
 }
 
 export function hydrateAlkene() {
   const bond = findBondByOrder(2, "C", "C");
-  if (!bond) return reactionResult(false, "Гидратация не прошла", "Двойная связь C=C не найдена.", {
-    advice: ["Добавьте C=C, затем примените H2O + C=C для получения спиртового фрагмента."]
+  if (!bond) return reactionResult(false, "Hydration not performed", "No C=C double bond was found.", {
+    advice: ["Add a C=C bond, then apply H2O + C=C to create an alcohol fragment in the model."]
   });
   bond.order = 1;
   const atomA = getAtom(bond.a);
@@ -67,17 +67,17 @@ export function hydrateAlkene() {
   addAtomAttached("H", atomB.id, angle - Math.PI * 0.35, 72);
   labState.selectedAtomIds = [atomA.id, atomB.id, o.id];
   labState.selectedBondId = bond.id;
-  return reactionResult(true, "Гидратация алкена", "По двойной связи добавлены OH и H, получился спиртовой фрагмент.", {
+  return reactionResult(true, "Alkene hydration", "OH and H were added across the C=C bond, producing an alcohol fragment in this illustrative transformation.", {
     equation: "C=C + H2O -> C-C(OH)",
-    uses: "Так моделируют получение спиртов из алкенов, например промышленный путь к этанолу или изопропанолу.",
-    advice: ["OH повышает полярность и способность к водородным связям.", "Если нужен менее полярный фрагмент, удалите O-H или замените OH на H."]
+    uses: "This rule-based example represents the formation of alcohols from alkenes, such as ethanol or isopropanol, without modeling industrial conditions.",
+    advice: ["An OH group can increase polarity and hydrogen-bonding capacity.", "To compare a less polar fragment in the model, remove O-H or replace OH with H."]
   });
 }
 
 export function chlorinateBenzene() {
   const ring = findSixCarbonRing();
-  if (!ring) return reactionResult(false, "Хлорирование не прошло", "Бензольное кольцо не найдено.", {
-    advice: ["Добавьте фрагмент «Бензол» или соберите шестиугольное кольцо C6."]
+  if (!ring) return reactionResult(false, "Chlorination not performed", "No benzene ring was found.", {
+    advice: ["Add the Benzene preset or build a six-membered C ring."]
   });
   const analysis = analyzeMolecule();
   const targetId = ring.find((id) => (analysis.atomMap.get(id)?.implicitH || 0) > 0) || ring[0];
@@ -92,10 +92,10 @@ export function chlorinateBenzene() {
   const cl = addAtomAttached("Cl", targetId, angle, 98);
   labState.selectedAtomIds = [targetId, cl.id];
   labState.selectedBondId = null;
-  return reactionResult(true, "Электрофильное хлорирование бензола", "Один H в бензольном кольце замещен на Cl.", {
+  return reactionResult(true, "Electrophilic chlorination of benzene", "One H on the benzene ring was replaced with Cl in this illustrative transformation.", {
     equation: "C6H6 + Cl2 -> C6H5Cl + HCl",
-    uses: "Хлорбензольные фрагменты применяются как промежуточные продукты в синтезе красителей, пестицидов, полимеров и лекарственных молекул.",
-    advice: ["Cl делает кольцо менее активным к дальнейшему электрофильному замещению.", "Попробуйте добавить второй заместитель и сравнить стабильность/полярность."]
+    uses: "Chlorobenzene derivatives can serve as intermediates in the synthesis of dyes, pesticides, polymers and medicinal compounds.",
+    advice: ["A Cl substituent generally deactivates the ring toward further electrophilic substitution.", "Try a second substituent and compare the displayed heuristic score and polarity."]
   });
 }
 
@@ -105,26 +105,26 @@ export function combustionPreview() {
   const c = counts.C || 0;
   const h = (counts.H || 0) + (counts.D || 0) + (counts.T || 0);
   const o = counts.O || 0;
-  if (!c && !h) return reactionResult(false, "Горение не рассчитано", "Для горения нужен органический фрагмент с C или H.", {
-    advice: ["Добавьте метан, этанол, бензол или другой C/H-фрагмент."]
+  if (!c && !h) return reactionResult(false, "Combustion preview unavailable", "The preview needs a fragment containing C or H.", {
+    advice: ["Add methane, ethanol, benzene or another C/H-containing fragment."]
   });
   const water = h / 2;
   const oxygen = c + h / 4 - o / 2;
   const left = analysis.formula;
   const waterProduct = ((counts.D || 0) + (counts.T || 0)) > 0 ? "(H/D/T)2O" : "H2O";
   const equation = `${left} + ${formatCoefficient(oxygen)}O2 -> ${formatCoefficient(c)}CO2 + ${formatCoefficient(water)}${waterProduct}`;
-  return reactionResult(true, "Расчет полного горения", "Молекула не изменена: показано уравнение продуктов полного окисления.", {
+  return reactionResult(true, "Complete-combustion equation preview", "The molecule was not changed; a rule-based complete-oxidation equation is shown.", {
     equation,
-    uses: "Горение используют для оценки состава органических веществ, топлива, теплотворности и продуктов окисления.",
-    advice: ["Больше C обычно дает больше CO2.", "Больше O в исходной молекуле уменьшает требуемое количество O2."]
+    uses: "Combustion equations can help discuss composition and oxidation products; this preview does not predict heat release or reaction feasibility.",
+    advice: ["More C in the input formula produces more CO2 in this equation.", "More O in the input formula reduces the calculated O2 coefficient."]
   });
 }
 
 export function combineMoleculeFragments() {
   const components = molecularComponents(false).filter((component) => component.atomIds.length > 0);
   if (components.length < 2) {
-    return reactionResult(false, "Нужно две молекулы", "На поле найден только один отдельный фрагмент.", {
-      advice: ["Добавьте вторую молекулу, например NaCl и H2O, затем нажмите «⇄ Соединить»."]
+    return reactionResult(false, "Two molecules required", "The workspace contains only one separate fragment.", {
+      advice: ["Add a second fragment, such as NaCl and H2O, then press Connect."]
     });
   }
   const [first, second] = pickComponentsForCombination(components);
@@ -135,8 +135,8 @@ export function combineMoleculeFragments() {
 
   const generic = createGenericIntermolecularLink(first, second);
   if (!generic) {
-    return reactionResult(false, "Нет подходящей пары", "Модель не нашла полярные, ионные или донорно-акцепторные центры.", {
-      advice: ["Выберите атомы из двух фрагментов или добавьте O/N/галоген/металл для межмолекулярного взаимодействия."]
+    return reactionResult(false, "No matching pair", "The model found no suitable polar, ionic or donor-acceptor centers.", {
+      advice: ["Select atoms from two fragments or add O, N, a halogen or a metal to explore an intermolecular interaction."]
     });
   }
   return generic;
@@ -145,19 +145,19 @@ export function combineMoleculeFragments() {
 export function nuclearConceptDemo() {
   const uraniumAtoms = labState.atoms.filter((atom) => atom.symbol === "U");
   if (!uraniumAtoms.length) {
-    return reactionResult(false, "U-демо не запущено", "Добавьте атом U или введите урановую учебную модель, затем нажмите U-демо.", {
-      advice: ["Это только безопасная визуализация радиоактивности и нейтронов, без параметров реальной цепной реакции."]
+    return reactionResult(false, "Illustrative nuclear demo not started", "Add a U atom or an illustrative uranium model, then press Illustrative nuclear demo.", {
+      advice: ["This visualization does not model the parameters of a real nuclear chain reaction."]
     });
   }
   labState.selectedAtomIds = uraniumAtoms.slice(0, 3).map((atom) => atom.id);
   playElementSound(getElement("U"), "nuclear");
-  return reactionResult(true, "Концепт ядерной цепной реакции", "Показана абстрактная схема: нейтронные импульсы и ионизация вокруг U. Это не расчет и не инструкция.", {
-    equation: "U + n -> возбужденное ядро -> осколки + n + энергия (учебная схема)",
-    uses: "Научный интерес: понять идею деления ядра, нейтронного размножения, поглощения нейтронов и роли замедлителя/поглотителя на концептуальном уровне.",
+  return reactionResult(true, "Illustrative nuclear-chain concept", "An abstract visualization shows neutron pulses and ionization near U. It is neither a calculation nor an instruction.", {
+    equation: "U + n -> excited nucleus -> fragments + n + energy (illustrative scheme)",
+    uses: "Conceptual topics include nuclear fission, neutron multiplication, absorption, and the roles of a moderator or absorber.",
     advice: [
-      "Безопасная граница: модель не показывает массы, геометрию, обогащение, отражатели или практические условия реальной цепной реакции.",
-      "Для стабилизации учебной модели добавляйте поглотитель нейтронов как концепт: B, Cd или H2O показывают идею торможения/поглощения, но не являются инструкцией.",
-      "U в этой лаборатории можно использовать для разговора о радиоактивности, изотопах и материалах, а не для практического ядерного проектирования."
+      "The model does not represent masses, geometry, enrichment, reflectors or operating conditions of a real chain reaction.",
+      "B, Cd or H2O may be discussed as conceptual examples of neutron absorption or moderation; this is not an operating guide.",
+      "Use U here to discuss radioactivity, isotopes and materials at a conceptual level only."
     ]
   });
 }
@@ -178,16 +178,16 @@ export function combineSaltAndWater(saltComponent, waterComponent) {
   labState.selectedAtomIds = [na.id, cl.id, waterO.id, waterH.id];
   labState.selectedBondId = null;
 
-  return reactionResult(true, "Растворение и гидратация NaCl", "NaCl не становится ковалентной молекулой: вода разделяет и стабилизирует Na+ и Cl−.", {
-    equation: "NaCl(s) + H2O(l) -> Na+(aq) + Cl-(aq); ΔHраств ≈ +3.9 кДж/моль",
-    uses: "Это модель растворения соли в воде: энергия решетки компенсируется гидратацией ионов полярными молекулами воды.",
+  return reactionResult(true, "NaCl dissolution and hydration", "This sketch does not make NaCl a covalent molecule; water separates and hydrates Na+ and Cl− ions.", {
+    equation: "NaCl(s) + H2O(l) -> Na+(aq) + Cl-(aq); ΔH(soln) ≈ +3.9 kJ/mol",
+    uses: "This illustrative dissolution sketch relates ionic lattice energy to hydration by polar water molecules; it does not calculate their balance.",
     advice: [
-      "Тип процесса: физико-химическое растворение и диссоциация, а не обычная реакция замещения.",
-      "Энергия: ΔHраств для NaCl около +3.9 кДж/моль; процесс слабо эндотермический, поэтому немного чувствителен к температуре.",
-      "Условия: вода жидкая, около 20-25 °C, 1 атм, раствор не насыщен, желательно перемешивание.",
-      "Параметры: высокая диэлектрическая проницаемость воды, ион-дипольное взаимодействие Na+···O и Cl−···H.",
-      "Если повысить температуру, растворение NaCl обычно немного облегчается, потому что процесс слабо эндотермический.",
-      "На схеме пунктирные связи показывают сольватацию, а не новую ковалентную связь."
+      "Process type: dissolution and dissociation, not an ordinary substitution reaction.",
+      "Energy: the listed ΔH(soln) for NaCl is about +3.9 kJ/mol; this model does not calculate it.",
+      "Example conditions: liquid water, about 20-25 °C and 1 atm, with an unsaturated solution and stirring.",
+      "Parameters to discuss: water's high dielectric permittivity and Na+···O and Cl−···H ion-dipole interactions.",
+      "The example suggests slight temperature sensitivity for weakly endothermic dissolution; this sketch does not predict solubility.",
+      "Dotted links depict solvation, not new covalent bonds."
     ]
   });
 }
@@ -208,12 +208,12 @@ export function createGenericIntermolecularLink(first, second) {
   const hDonorB = atomsB.find((atom) => isHydrogenLike(atom.symbol));
   const acceptorA = atomsA.find(isDonorAtom);
 
-  if (metalA && donorB) return linkComponents(metalA, donorB, "coordination", "Координационное связывание", "M + :L -> M<-L; ΔG зависит от лиганда и pH", "донорно-акцепторная связь металл-лиганд");
-  if (metalB && donorA) return linkComponents(metalB, donorA, "coordination", "Координационное связывание", "M + :L -> M<-L; ΔG зависит от лиганда и pH", "донорно-акцепторная связь металл-лиганд");
-  if (positiveA && negativeB) return linkComponents(positiveA, negativeB, "ionic", "Ионная ассоциация", "A+ + B- -> A+···B-; энергия обычно отрицательная", "электростатическая ионная пара");
-  if (positiveB && negativeA) return linkComponents(positiveB, negativeA, "ionic", "Ионная ассоциация", "A+ + B- -> A+···B-; энергия обычно отрицательная", "электростатическая ионная пара");
-  if (hDonorA && acceptorB) return linkComponents(hDonorA, acceptorB, "hbond", "Водородная связь", "X-H + :Y -> X-H···Y; ~5-30 кДж/моль", "межмолекулярная водородная связь");
-  if (hDonorB && acceptorA) return linkComponents(hDonorB, acceptorA, "hbond", "Водородная связь", "X-H + :Y -> X-H···Y; ~5-30 кДж/моль", "межмолекулярная водородная связь");
+  if (metalA && donorB) return linkComponents(metalA, donorB, "coordination", "Coordination interaction", "M + :L -> M<-L; ΔG depends on ligand and pH", "a modeled metal-ligand donor-acceptor link");
+  if (metalB && donorA) return linkComponents(metalB, donorA, "coordination", "Coordination interaction", "M + :L -> M<-L; ΔG depends on ligand and pH", "a modeled metal-ligand donor-acceptor link");
+  if (positiveA && negativeB) return linkComponents(positiveA, negativeB, "ionic", "Ionic association", "A+ + B- -> A+···B-; interaction energy is often negative (conditions matter)", "an electrostatic ion pair in the model");
+  if (positiveB && negativeA) return linkComponents(positiveB, negativeA, "ionic", "Ionic association", "A+ + B- -> A+···B-; interaction energy is often negative (conditions matter)", "an electrostatic ion pair in the model");
+  if (hDonorA && acceptorB) return linkComponents(hDonorA, acceptorB, "hbond", "Hydrogen-bond interaction", "X-H + :Y -> X-H···Y; ~5-30 kJ/mol (illustrative range)", "a modeled intermolecular hydrogen bond");
+  if (hDonorB && acceptorA) return linkComponents(hDonorB, acceptorA, "hbond", "Hydrogen-bond interaction", "X-H + :Y -> X-H···Y; ~5-30 kJ/mol (illustrative range)", "a modeled intermolecular hydrogen bond");
   return null;
 }
 
@@ -222,42 +222,42 @@ export function linkComponents(a, b, order, title, equation, interactionText) {
   labState.selectedAtomIds = [a.id, b.id];
   labState.selectedBondId = null;
   const params = interactionParameters(order);
-  return reactionResult(true, title, `Создано взаимодействие ${a.symbol}${a.id}···${b.symbol}${b.id}: ${interactionText}.`, {
+  return reactionResult(true, title, `Modeled interaction ${a.symbol}${a.id}···${b.symbol}${b.id}: ${interactionText}.`, {
     equation,
-    uses: "Это физико-химическое соединение двух молекул через слабое или координационное взаимодействие, а не обязательно новая ковалентная молекула.",
+    uses: "This is a model of a weak or coordination interaction between two fragments; it does not establish a new covalent molecule or a stable complex.",
     advice: [
-      `Энергия: ${params.energy}.`,
-      `Температура: ${params.temperature}.`,
-      `Среда: ${params.medium}.`,
-      `Параметры: ${params.parameters}.`
+      `Illustrative energy range: ${params.energy}.`,
+      `Example temperature: ${params.temperature}.`,
+      `Example medium: ${params.medium}.`,
+      `Parameters to discuss: ${params.parameters}.`
     ]
   });
 }
 
 export function interactionParameters(order) {
   if (order === "hbond") return {
-    energy: "примерно 5-30 кДж/моль",
-    temperature: "лучше заметно при комнатной температуре и ниже",
-    medium: "полярная среда или чистые вещества с O/N/F-H",
-    parameters: "донор H, акцептор с неподеленной парой, расстояние 1.5-2.5 Å"
+    energy: "about 5-30 kJ/mol; illustrative, not calculated here",
+    temperature: "often more evident at room temperature or below",
+    medium: "a polar medium or a pure substance with O/N/F-H groups",
+    parameters: "an H donor, a lone-pair acceptor and a suggested distance of 1.5-2.5 Å"
   };
   if (order === "coordination") return {
-    energy: "примерно 40-200 кДж/моль, зависит от металла и лиганда",
-    temperature: "обычно 20-80 °C в растворе",
-    medium: "вода, спирт или буфер; важны pH и конкурирующие лиганды",
-    parameters: "свободная орбиталь металла, донор O/N/S, подходящая геометрия"
+    energy: "about 40-200 kJ/mol as an illustrative range; depends on metal and ligand",
+    temperature: "often 20-80 °C in solution in this example",
+    medium: "water, alcohol or buffer; pH and competing ligands matter",
+    parameters: "metal acceptor site, O/N/S donor and suitable geometry"
   };
   if (order === "ionic") return {
-    energy: "кулоновское притяжение часто десятки кДж/моль в воде",
-    temperature: "обычно 20-25 °C, зависит от растворимости",
-    medium: "полярный растворитель с высокой диэлектрической проницаемостью",
-    parameters: "заряд ионов, ионная сила, концентрация, сольватация"
+    energy: "Coulomb attraction can be tens of kJ/mol in water; not calculated here",
+    temperature: "often 20-25 °C in this example; depends on solubility",
+    medium: "a polar solvent with high dielectric permittivity",
+    parameters: "ion charge, ionic strength, concentration and solvation"
   };
   return {
-    energy: "примерно 1-20 кДж/моль",
-    temperature: "около 20-25 °C",
-    medium: "подходящий растворитель",
-    parameters: "полярность, концентрация, расстояние между центрами"
+    energy: "about 1-20 kJ/mol as an illustrative range",
+    temperature: "about 20-25 °C",
+    medium: "a suitable solvent",
+    parameters: "polarity, concentration and distance between centers"
   };
 }
 
@@ -309,17 +309,17 @@ export function reactAllPossible() {
 
   const after = analyzeMolecule();
   if (!operations.length) {
-    return reactionResult(false, "Песочница: реакции не найдены", "Для текущей молекулы и катализатора нет подходящего шаблона.", {
-      equation: `катализатор: ${catalystLabel()}`,
-      uses: "Выберите катализатор под нужный фрагмент: Ni/Pd/Pt для C=C, H+ для гидратации, FeCl3 для бензола.",
+    return reactionResult(false, "Sandbox: no matching transformation", "No rule matches the current molecule and selected catalyst.", {
+      equation: `Catalyst: ${catalystLabel()}`,
+      uses: "Choose a catalyst for the fragment: Ni/Pd/Pt for C=C, H+ for hydration, or FeCl3 for benzene in this rule-based demo.",
       advice: [catalystAdvice(), ...buildStabilizationSuggestions(after).map((item) => item.text).slice(0, 2)]
     });
   }
 
-  return reactionResult(true, "Песочница: общая реакция", `Выполнено операций: ${operations.length}. Катализатор: ${catalystLabel()}.`, {
+  return reactionResult(true, "Sandbox: rule-based transformations", `${operations.length} operation(s) applied. Catalyst: ${catalystLabel()}.`, {
     equation: operations.slice(0, 4).join("; ") + (operations.length > 4 ? "; ..." : ""),
-    uses: "Это учебная массовая реакция: модель ищет подходящие фрагменты и применяет простые правила ко всем найденным местам.",
-    advice: [`После реакции: ${stabilityText(after.score)} ${after.score}%.`, ...buildStabilizationSuggestions(after).map((item) => item.text).slice(0, 3)]
+    uses: "This teaching demo finds matching fragments and applies simple rules at the sites it identifies; it does not predict a real reaction outcome.",
+    advice: [`After transformation: heuristic score ${stabilityText(after.score)} ${after.score}%.`, ...buildStabilizationSuggestions(after).map((item) => item.text).slice(0, 3)]
   });
 }
 
@@ -335,20 +335,20 @@ export function autoStabilizeStep() {
       const a = getAtom(connected.a);
       const b = getAtom(connected.b);
       weakenOrRemoveBond(connected.id);
-      return `${a?.symbol || "?"}-${b?.symbol || "?"}: связь ослаблена для снятия перегрузки`;
+      return `${a?.symbol || "?"}-${b?.symbol || "?"}: bond order lowered to address an overloaded atom`;
     }
   }
 
   const charged = labState.atoms.find((atom) => atom.charge !== 0);
   if (charged) {
     charged.charge += charged.charge > 0 ? -1 : 1;
-    return `${charged.symbol}${charged.id}: заряд сдвинут к 0`;
+    return `${charged.symbol}${charged.id}: formal charge moved toward 0`;
   }
 
   const under = reports.find((report) => report.state === "warn" && report.implicitH === 0 && !isHydrogenLike(report.atom.symbol));
   if (under) {
     addAtomAttached("H", under.atom.id, nextAttachmentAngle(under.atom.id), 72);
-    return `${under.atom.symbol}${under.atom.id}: добавлен H к свободной валентности`;
+    return `${under.atom.symbol}${under.atom.id}: H added at an available valence`;
   }
 
   if (analysis.strainEnergy > 12) {
@@ -357,7 +357,7 @@ export function autoStabilizeStep() {
       atom.vx = 0;
       atom.vy = 0;
     });
-    return "геометрия центрирована для снижения напряжения";
+    return "graph layout centered to reduce the displayed strain estimate";
   }
 
   return null;
@@ -372,10 +372,10 @@ export function addHeavyWaterProcess() {
   createOrUpdateBond(o.id, d2.id, 1);
   labState.selectedAtomIds = [o.id, d1.id, d2.id];
   labState.selectedBondId = null;
-  return reactionResult(true, "Добавлена тяжелая вода", "Создана молекула D2O: изотопная форма воды с дейтерием вместо обычного H.", {
+  return reactionResult(true, "Heavy water added", "A D2O model was created: water with deuterium in place of ordinary H.", {
     equation: "2D + O -> D2O",
-    uses: "D2O применяют как изотопную метку, растворитель в спектроскопии и учебный пример изотопного замещения.",
-    advice: ["D химически похож на H, но почти вдвое тяжелее.", "Сравните H2O и D2O по массе и формуле в блоке «Соединение»."]
+    uses: "D2O is used as an isotope-labeled substance and a spectroscopy solvent; here it illustrates isotope substitution.",
+    advice: ["D has similar chemistry to H but nearly twice its atomic mass.", "Compare the displayed mass and formula of H2O and D2O in the Compound panel."]
   });
 }
 
@@ -388,13 +388,13 @@ export function enrichHydrogenIsotope(targetSymbol, ratio) {
   if (!pool.length) {
     const created = materializeImplicitIsotope(targetSymbol);
     if (!created) {
-      return reactionResult(false, `${target.name}: обогащение не выполнено`, "Нет явных H и нет доступных скрытых H для замещения.", {
-        advice: ["Добавьте метан, воду, этанол или выберите атом C/N/O со скрытым H."]
+      return reactionResult(false, `${target.name}: isotope substitution not performed`, "No explicit H or available implicit H was found for substitution.", {
+        advice: ["Add methane, water or ethanol, or select a C, N or O atom with an implicit H."]
       });
     }
     labState.selectedAtomIds = [created.id];
     labState.selectedBondId = null;
-    return reactionResult(true, `${target.name}: изотопное замещение`, `Скрытый H превращен в явный ${targetSymbol}.`, isotopeDetails(targetSymbol, true));
+    return reactionResult(true, `${target.name}: isotope substitution`, `An implicit H was represented explicitly as ${targetSymbol}.`, isotopeDetails(targetSymbol, true));
   }
 
   const changeCount = Math.max(1, Math.ceil(pool.length * ratio));
@@ -405,15 +405,15 @@ export function enrichHydrogenIsotope(targetSymbol, ratio) {
   });
   labState.selectedAtomIds = pool.slice(0, changeCount).map((atom) => atom.id);
   labState.selectedBondId = null;
-  return reactionResult(true, `${target.name}: обогащение`, `${changeCount} атом(ов) водорода заменены на ${targetSymbol}.`, isotopeDetails(targetSymbol, false));
+  return reactionResult(true, `${target.name}: isotope substitution`, `${changeCount} hydrogen atom(s) replaced with ${targetSymbol} in the model.`, isotopeDetails(targetSymbol, false));
 }
 
 export function resetHydrogenIsotopes() {
   const selectedPool = labState.selectedAtomIds.map(getAtom).filter((atom) => atom && isotopeSymbols.has(atom.symbol));
   const pool = selectedPool.length ? selectedPool : labState.atoms.filter((atom) => isotopeSymbols.has(atom.symbol));
   if (!pool.length) {
-    return reactionResult(false, "Возврат к H не выполнен", "В молекуле нет D или T.", {
-      advice: ["Сначала добавьте D2O, D-обогащение или T-метку."]
+    return reactionResult(false, "Reset to H not performed", "The molecule contains no D or T.", {
+      advice: ["First add D2O, substitute D for H, or add a T label."]
     });
   }
   pool.forEach((atom) => {
@@ -423,10 +423,10 @@ export function resetHydrogenIsotopes() {
   });
   labState.selectedAtomIds = pool.map((atom) => atom.id);
   labState.selectedBondId = null;
-  return reactionResult(true, "Изотопы возвращены к H", `${pool.length} атом(ов) D/T заменены на обычный H.`, {
+  return reactionResult(true, "Isotopes reset to H", `${pool.length} D/T atom(s) replaced with ordinary H in the model.`, {
     equation: "D/T -> H",
-    uses: "В модели это быстрый способ сравнить обычную и изотопно обогащенную молекулу.",
-    advice: ["Если формула стала легче, значит изотопная масса ушла.", "Можно снова применить D↑ или T* только к выбранным атомам."]
+    uses: "In the model, this lets you compare ordinary and isotope-labeled versions of a molecule.",
+    advice: ["A lower displayed mass reflects the isotope substitution in this model.", "You can apply D↑ or T* again to selected atoms only."]
   });
 }
 
@@ -434,14 +434,14 @@ export function isotopeDetails(targetSymbol, materialized) {
   if (targetSymbol === "D") {
     return {
       equation: materialized ? "R-H -> R-D" : "R-H + D -> R-D + H",
-      uses: "Дейтерирование применяют для изотопной маркировки, изучения механизмов реакций и сдвигов в спектрах.",
-      advice: ["D сохраняет валентность H, но увеличивает массу молекулы.", "Для большего обогащения выберите несколько H и нажмите D↑ ещё раз."]
+      uses: "Deuterium labeling is used in studies of reaction mechanisms and spectral changes; this tool only substitutes an isotope in the model.",
+      advice: ["D has the same modeled valence as H but increases the displayed molecular mass.", "To label more positions, select several H atoms and press D↑ again."]
     };
   }
   return {
     equation: materialized ? "R-H -> R-T" : "R-H + T -> R-T + H",
-    uses: "Тритиевые метки используют как учебный пример трассировки; в реальности T радиоактивен и требует строгого контроля.",
-    advice: ["T сохраняет валентность H, но заметно повышает массу.", "Используйте T* как метку отдельного положения, а H↺ для возврата."]
+    uses: "Tritium labeling illustrates tracer concepts; real T is radioactive and requires strict controls.",
+    advice: ["T has the same modeled valence as H but increases the displayed mass.", "Use T* to label a selected position and H↺ to reset it."]
   };
 }
 
