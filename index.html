@@ -118,7 +118,7 @@
       <div class="dock-resizer" data-split="bottom" role="separator" aria-label="Process panel height" aria-orientation="horizontal" tabindex="0"></div>
       <div class="dock-toolbar">
         <div class="panel-tabs" role="tablist" aria-label="Process panel"><button role="tab" aria-selected="true" data-dock-tab="fragments">Fragments</button><button role="tab" aria-selected="false" data-dock-tab="reactions">Reactions</button><button role="tab" aria-selected="false" data-dock-tab="catalysts">Catalysts</button><button role="tab" aria-selected="false" data-dock-tab="isotopes">Isotopes</button></div>
-        <div class="quick-actions"><button class="chip strong-chip" id="expandMolecule" title="Expand molecule"><i data-lucide="unfold-horizontal"></i>Diagram</button><button class="chip strong-chip" id="combineMolecules" title="Connect molecules"><i data-lucide="combine"></i>Connect</button><button class="chip strong-chip" id="reactAll"><i data-lucide="zap"></i>Reaction demo</button></div>
+        <div class="quick-actions"><button class="chip mobile-journal-toggle" id="toggleJournal" aria-controls="mobileJournal" aria-expanded="false">Journal</button><button class="chip strong-chip" id="expandMolecule" title="Expand molecule"><i data-lucide="unfold-horizontal"></i>Diagram</button><button class="chip strong-chip" id="combineMolecules" title="Connect molecules"><i data-lucide="combine"></i>Connect</button><button class="chip strong-chip" id="reactAll"><i data-lucide="zap"></i>Reaction demo</button></div>
       </div>
       <div class="dock-content">
         <div class="dock-pages">
@@ -127,7 +127,7 @@
           <div class="dock-section" id="catalystButtons" data-dock-page="catalysts" role="tabpanel" hidden></div>
           <div class="dock-section" id="isotopeButtons" data-dock-page="isotopes" role="tabpanel" hidden></div>
         </div>
-        <section class="journal-panel"><div class="section-title">Process journal</div><div class="reaction-log" id="reactionLog" aria-live="polite"></div></section>
+        <section class="journal-panel" id="mobileJournal" aria-label="Process journal"><div class="section-title">Process journal</div><div class="reaction-log" id="reactionLog" aria-live="polite" tabindex="0"></div></section>
       </div>
     </footer>
     <div class="app-status"><span id="workspaceStatus" aria-live="polite">Ready</span><span id="databaseStatus" class="db-status">Local database</span><span>2D · heuristic assessment</span></div>

@@ -15,6 +15,12 @@ export function initWorkspace() {
   for (const side of ["left", "right", "bottom"]) applySize(side, layout[side]);
   bindTabs("inspector");
   bindTabs("dock");
+  const journalButton = document.getElementById("toggleJournal");
+  journalButton.addEventListener("click", () => {
+    const open = journalButton.closest(".reaction-dock").classList.toggle("show-journal");
+    journalButton.setAttribute("aria-expanded", String(open));
+    journalButton.textContent = open ? "Close journal" : "Journal";
+  });
   document.querySelectorAll("[data-split]").forEach(bindSplitter);
   document.getElementById("menuReference").addEventListener("click", openReferenceModal);
   document.addEventListener("click", event => {
