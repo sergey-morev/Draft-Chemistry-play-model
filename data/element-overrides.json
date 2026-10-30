@@ -9,7 +9,7 @@
       "isotopeOf": "H",
       "mass": 2.014,
       "valences": [1],
-      "brief": "Изотоп H: тяжелее, валентность 1."
+      "brief": "Hydrogen isotope: greater mass; model valence 1."
     },
     {
       "symbol": "T",
@@ -17,82 +17,82 @@
       "isotopeOf": "H",
       "mass": 3.016,
       "valences": [1],
-      "brief": "Изотоп H: радиоактивная учебная метка."
+      "brief": "Radioactive hydrogen isotope; shown here as an illustrative label."
     },
     {
       "symbol": "U",
       "name": "Уран",
       "mass": 238.029,
       "valences": [3, 4, 5, 6],
-      "brief": "Актинид: базово U-238; A- позволяет показать U-235 в учебной модели."
+      "brief": "Actinide: U-238 by default; A− can display U-235 in this model."
     },
     {
       "symbol": "Fe",
       "name": "Железо",
       "valences": [2, 3],
-      "brief": "Переходный металл: часто Fe(II)/Fe(III), важен в оксидах и биомолекулах."
+      "brief": "Transition metal: Fe(II) and Fe(III) are common; iron occurs in oxides and biomolecules."
     },
     {
       "symbol": "Cu",
       "name": "Медь",
       "valences": [1, 2],
-      "brief": "Переходный металл: часто Cu(I)/Cu(II), может заменить Fe в учебных био-моделях."
+      "brief": "Transition metal: Cu(I) and Cu(II) are common. The model permits Cu-for-Fe substitution in illustrative biomolecular sketches; this does not establish a biological analogue."
     },
     {
       "symbol": "Lu",
       "name": "Лютеций",
       "mass": 174.967,
       "valences": [3],
-      "brief": "Лантанид: Lu-177 часто показывают в DOTA-подобной радиофарммодели."
+      "brief": "Lanthanide: Lu-177 appears in an illustrative DOTA-like radiopharmaceutical sketch."
     },
     {
       "symbol": "Y",
       "name": "Иттрий",
       "mass": 88.906,
       "valences": [3],
-      "brief": "Переходный металл: Y-90 — учебный пример β-радиометалла для хелаторов."
+      "brief": "Transition metal: Y-90 is an illustrative beta-emitting radiometal in chelator examples."
     },
     {
       "symbol": "Ac",
       "name": "Актиний",
       "mass": 227,
       "valences": [3],
-      "brief": "Актинид: Ac-225 в песочнице показан только как концептуальная α-метка."
+      "brief": "Actinide: Ac-225 is shown only as a conceptual alpha-emitting label."
     },
     {
       "symbol": "Ra",
       "name": "Радий",
       "mass": 226,
       "valences": [2],
-      "brief": "Щелочноземельный радиоэлемент: Ra-223 показан без практических ядерных параметров."
+      "brief": "Radioactive alkaline-earth element: Ra-223 is shown without practical nuclear parameters."
     },
     {
       "symbol": "Sm",
       "name": "Самарий",
       "mass": 150.36,
       "valences": [2, 3],
-      "brief": "Лантанид: Sm-153 можно использовать как учебный радиометалл."
+      "brief": "Lanthanide: Sm-153 is used here as an illustrative radiometal label."
     },
     {
       "symbol": "Sr",
       "name": "Стронций",
       "mass": 87.62,
       "valences": [2],
-      "brief": "Щелочноземельный металл: Sr-89 показывает аналогию с Ca/Sr в костной теме."
+      "brief": "Alkaline-earth metal: Sr-89 illustrates a Ca/Sr analogy in a bone-related example, without biological validation."
     },
     {
       "symbol": "I",
       "name": "Йод",
       "mass": 126.904,
       "valences": [1, 3, 5, 7],
-      "brief": "Галоген: I-131 в модели лучше показывать как ковалентную радиометку."
+      "brief": "Halogen: I-131 is represented in this model as a covalent radiolabel."
     },
     {
       "symbol": "At",
       "name": "Астат",
       "mass": 210,
       "valences": [1, 3, 5, 7],
-      "brief": "Тяжёлый галоген: At-211 показан как безопасная учебная α-метка."
+      "brief": "Heavy halogen: At-211 is shown as an illustrative alpha-emitting label, without handling guidance."
     }
   ]
 }
