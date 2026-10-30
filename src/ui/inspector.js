@@ -91,6 +91,7 @@ export function renderCompoundInfo(analysis) {
       <span>${escapeHtml(info.kind)}</span>
     </div>
     <p>${escapeHtml(shortenText(info.summary, 118))}</p>
+    <p>Exploratory rule-based 2D schematic. Scores and geometry are not validated physical measurements or reaction predictions. Not approved for student use or laboratory or clinical decisions.</p>
     <div class="compound-tags">
       ${tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
     </div>

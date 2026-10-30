@@ -14,10 +14,10 @@ export function scheduleExternalLookupHint() {
   window.clearTimeout(labState.pubChemDebounceTimer);
   const query = formulaInput.value.trim();
   if (!query || query.length < 4 || findKnownSubstance(query) || parseFormula(query).ok) {
-    setDatabaseStatus("локальная база", "ready");
+    setDatabaseStatus("Local database", "ready");
     return;
   }
-  setDatabaseStatus("можно искать PubChem", "ready");
+  setDatabaseStatus("PubChem search available", "ready");
   // Names typed into the editor stay local until the user explicitly requests PubChem.
 }
 

@@ -22,7 +22,7 @@ export function initWorkspace() {
   });
   document.getElementById("saveModel").addEventListener("click", () => {
     download(JSON.stringify({ format: "chemistry-play-model", version: 1, molecule: snapshotMolecule() }, null, 2), "molecule.json", "application/json");
-    setStatus("Модель сохранена");
+    setStatus("Model saved");
   });
   document.getElementById("exportSvg").addEventListener("click", exportSvg);
   document.getElementById("openModel").addEventListener("click", () => document.getElementById("modelFile").click());
@@ -120,7 +120,7 @@ function resetLayout() {
   for (const variable of ["--left-width", "--right-width", "--dock-height"]) document.documentElement.style.removeProperty(variable);
   document.querySelector(".app-shell").classList.remove("library-hidden", "inspector-hidden", "mobile-library", "mobile-inspector");
   try { localStorage.removeItem(layoutKey); } catch {}
-  setStatus("Расположение восстановлено");
+  setStatus("Layout reset");
 }
 
 function bindPeriodicDialog() {
@@ -151,44 +151,44 @@ function exportSvg() {
   svg.prepend(style);
   svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   download(new XMLSerializer().serializeToString(svg), "molecule.svg", "image/svg+xml");
-  setStatus("Схема экспортирована");
+  setStatus("Diagram exported");
 }
 
 async function loadModel(event) {
   const file = event.target.files?.[0];
   if (!file) return;
   try {
-    if (file.size > 5 * 1024 * 1024) throw new Error("Файл больше 5 МБ");
+    if (file.size > 5 * 1024 * 1024) throw new Error("File exceeds 5 MB");
     const data = JSON.parse(await file.text());
     const model = validateModelFile(data);
     Object.assign(labState, model);
     labState.selectedAtomIds = []; labState.selectedBondId = null; labState.pendingAtomId = null;
     analyzeAndRender();
-    logReaction("Модель загружена из локального файла.");
-    setStatus("Модель открыта");
-  } catch (error) { setStatus(`Не удалось открыть модель: ${error.message}`); }
+    logReaction("Model loaded from a local file.");
+    setStatus("Model opened");
+  } catch (error) { setStatus(`Could not open model: ${error.message}`); }
   event.target.value = "";
 }
 
 export function validateModelFile(data) {
-  if (data?.format !== "chemistry-play-model" || data.version !== 1) throw new Error("Неподдерживаемый формат");
+  if (data?.format !== "chemistry-play-model" || data.version !== 1) throw new Error("Unsupported format");
   const model = data.molecule;
-  if (!Array.isArray(model?.atoms) || model.atoms.length > 2000 || !Array.isArray(model.bonds) || model.bonds.length > 6000) throw new Error("Некорректный размер модели");
+  if (!Array.isArray(model?.atoms) || model.atoms.length > 2000 || !Array.isArray(model.bonds) || model.bonds.length > 6000) throw new Error("Invalid model size");
   const symbols = new Set(elements.map(element => element.symbol));
   const ids = new Set();
   const atoms = model.atoms.map(atom => {
-    if (!Number.isSafeInteger(atom.id) || atom.id < 1 || ids.has(atom.id) || !symbols.has(atom.symbol) || ![atom.x, atom.y, atom.charge].every(Number.isFinite)) throw new Error("Некорректный атом");
+    if (!Number.isSafeInteger(atom.id) || atom.id < 1 || ids.has(atom.id) || !symbols.has(atom.symbol) || ![atom.x, atom.y, atom.charge].every(Number.isFinite)) throw new Error("Invalid atom");
     ids.add(atom.id);
     const copy = { ...atom, x: Math.max(24, Math.min(976, atom.x)), y: Math.max(24, Math.min(696, atom.y)), vx: 0, vy: 0 };
     for (const key of ["count", "isotopeShift", "enrichment", "valenceOverride", "targetMassNumber", "groupValence"]) {
-      if (copy[key] != null && (!Number.isFinite(copy[key]) || Math.abs(copy[key]) > 1e7)) throw new Error("Некорректная настройка атома");
+      if (copy[key] != null && (!Number.isFinite(copy[key]) || Math.abs(copy[key]) > 1e7)) throw new Error("Invalid atom setting");
     }
-    if (copy.groupCounts && Object.entries(copy.groupCounts).some(([symbol,n]) => !symbols.has(symbol) || !Number.isFinite(n) || n < 0 || n > 1e7)) throw new Error("Некорректная группа");
+    if (copy.groupCounts && Object.entries(copy.groupCounts).some(([symbol,n]) => !symbols.has(symbol) || !Number.isFinite(n) || n < 0 || n > 1e7)) throw new Error("Invalid group");
     return copy;
   });
   const bondIds = new Set();
   const bonds = model.bonds.map(bond => {
-    if (!Number.isSafeInteger(bond.id) || bond.id < 1 || bondIds.has(bond.id) || !ids.has(bond.a) || !ids.has(bond.b) || bond.a === bond.b || ![1,2,3,"aromatic","ionic","coordination","hbond","solvation"].includes(bond.order)) throw new Error("Некорректная связь");
+    if (!Number.isSafeInteger(bond.id) || bond.id < 1 || bondIds.has(bond.id) || !ids.has(bond.a) || !ids.has(bond.b) || bond.a === bond.b || ![1,2,3,"aromatic","ionic","coordination","hbond","solvation"].includes(bond.order)) throw new Error("Invalid bond");
     bondIds.add(bond.id);
     return { id: bond.id, a: bond.a, b: bond.b, order: bond.order };
   });

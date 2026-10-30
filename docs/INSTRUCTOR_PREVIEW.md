@@ -1,0 +1,9 @@
+# Controlled instructor preview: two molecular sketches
+
+**Exploratory prototype. Not scientifically validated, approved for student use, or suitable for laboratory or clinical decisions.** This walkthrough is for an owner-approved private desktop review at 1024 px or wider. It does not constitute an invitation or a hosted preview. The full application is still being translated and scientifically reviewed.
+
+1. **Oxygen and water.** Open **Periodic table**, select **Oxygen (O)**, close the table, and click the canvas once to place an O atom. In the formula field, enter `H2O` and press Enter; this replaces the canvas with the catalog's water model. The inspector should show **water**, formula **H2O**, one explicit O atom, and no drawn bonds. Two H atoms are implicit in this supported SMILES representation. Open **Reference** to compare the formula with the schematic and read the model limits.
+
+2. **Carbon dioxide.** Enter `CO2` and press Enter. The inspector should show **carbon dioxide**, formula **CO2**, three explicit atoms, and two modeled C=O double bonds. Open **Reference** and compare this catalog-mapped structure with water. Molecular formula alone does not uniquely determine structure in general; this example uses a known catalog entry.
+
+In both examples, the percentage is a **rule-based heuristic score**, not measured stability. The layout and strain display are schematic estimates, not validated physical energies. This software does not predict reactions. RDKit and PubChem are optional external checks; neither is needed for these two local examples, and enabling them can send or load data over the network. Do not use the remaining reaction, isotope, coordination, or biomolecular controls as validated teaching content. The 390 px journal is currently hidden, so this candidate is desktop-only. A private-access method and any external showing require a separate owner decision.

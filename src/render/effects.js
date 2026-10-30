@@ -115,7 +115,7 @@ export function triggerReactionEffect(analysis, result) {
 
   if (reactionFlash) {
     reactionFlash.className = `reaction-flash show ${state}`;
-    reactionFlash.innerHTML = `<strong>${escapeHtml(effectLabel(state))}</strong><span>${escapeHtml(result?.title || "реакция")}</span>`;
+    reactionFlash.innerHTML = `<strong>${escapeHtml(effectLabel(state))}</strong><span>${escapeHtml(result?.title || "reaction")}</span>`;
     window.setTimeout(() => {
       reactionFlash.className = "reaction-flash";
       reactionFlash.innerHTML = "";
@@ -133,10 +133,10 @@ export function triggerReactionEffect(analysis, result) {
 }
 
 export function effectLabel(state) {
-  if (state === "stable") return "стабильно";
-  if (state === "tense") return "напряжение";
-  if (state === "unstable") return "нестабильно";
-  return "нет реакции";
+  if (state === "stable") return "model-consistent";
+  if (state === "tense") return "model strain flagged";
+  if (state === "unstable") return "model warnings";
+  return "no reaction";
 }
 
 export function stabilityState(score) {

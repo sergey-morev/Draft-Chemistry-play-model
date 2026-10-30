@@ -83,12 +83,12 @@ fs.mkdirSync(out,{recursive:true});
   await check("save open roundtrip and invalid-file rejection",async()=>{
     const snapshot=await page.evaluate(async()=>{ const {snapshotMolecule}=await import("/src/simulation/history.js"); return {format:"chemistry-play-model",version:1,molecule:snapshotMolecule()}; });
     await page.locator("#modelFile").setInputFiles({name:"model.json",mimeType:"application/json",buffer:Buffer.from(JSON.stringify(snapshot))});
-    await page.waitForFunction(()=>/открыта|Не удалось/.test(document.getElementById("workspaceStatus").textContent));
-    if(!/открыта/.test(await page.locator("#workspaceStatus").innerText())) throw new Error("Import failed: "+await page.locator("#workspaceStatus").innerText());
+    await page.waitForFunction(()=>/opened|Could not/.test(document.getElementById("workspaceStatus").textContent));
+    if(!/opened/.test(await page.locator("#workspaceStatus").innerText())) throw new Error("Import failed: "+await page.locator("#workspaceStatus").innerText());
     const bad=structuredClone(snapshot); bad.molecule.atoms[0].symbol="<script>";
     await page.locator("#modelFile").setInputFiles({name:"bad.json",mimeType:"application/json",buffer:Buffer.from(JSON.stringify(bad))});
-    await page.waitForFunction(()=>/Не удалось/.test(document.getElementById("workspaceStatus").textContent));
-    if(!/Не удалось/.test(await page.locator("#workspaceStatus").innerText())) throw new Error("Bad import accepted");
+    await page.waitForFunction(()=>/Could not/.test(document.getElementById("workspaceStatus").textContent));
+    if(!/Could not/.test(await page.locator("#workspaceStatus").innerText())) throw new Error("Bad import accepted");
   });
   await check("deuterium, catalyst reaction and metal coordination",async()=>{
     await page.locator("#formulaInput").fill("D2O"); await page.locator("#formulaInput").press("Enter");

@@ -5,7 +5,7 @@ import { formatNumber, nearlyEqual } from "../utils/format.js";
 
 export function parseFormula(input) {
   const source = normalizeFormulaInput(input);
-  if (!source) return { ok: false, error: "Введите формулу." };
+  if (!source) return { ok: false, error: "Enter a formula." };
   let index = 0;
 
   function parseGroup(stopChar = "") {
@@ -32,7 +32,7 @@ export function parseFormula(input) {
       }
       const symbol = readElementSymbol();
       if (!symbol) return null;
-      if (!elementBySymbol.has(symbol)) return { error: `Неизвестный элемент ${symbol}.` };
+      if (!elementBySymbol.has(symbol)) return { error: `Unknown element ${symbol}.` };
       const amount = readNumber() || 1;
       counts[symbol] = (counts[symbol] || 0) + amount;
     }
@@ -61,9 +61,9 @@ export function parseFormula(input) {
   }
 
   const counts = parseGroup();
-  if (!counts || counts.error) return { ok: false, error: counts?.error || `Не удалось разобрать около "${source.slice(index, index + 8)}".` };
-  if (index < source.length) return { ok: false, error: `Лишний символ "${source[index]}".` };
-  if (!Object.keys(counts).length) return { ok: false, error: "Формула пустая." };
+  if (!counts || counts.error) return { ok: false, error: counts?.error || `Could not parse near "${source.slice(index, index + 8)}".` };
+  if (index < source.length) return { ok: false, error: `Unexpected character "${source[index]}".` };
+  if (!Object.keys(counts).length) return { ok: false, error: "The formula is empty." };
   return { ok: true, counts, formula: formulaFromCounts(counts) };
 }
 

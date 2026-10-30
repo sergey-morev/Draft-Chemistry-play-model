@@ -12,7 +12,7 @@ import { clamp, escapeHtml, formatNumber, signed, stabilityText } from "../utils
 
 export function openReferenceModal() {
   const analysis = labState.lastAnalysis || analyzeMolecule();
-  referenceTitle.textContent = labState.compoundMeta?.commonName || displayFormula(analysis) || "Свойства вещества";
+  referenceTitle.textContent = labState.compoundMeta?.commonName || displayFormula(analysis) || "Substance properties";
   referenceBody.innerHTML = buildReferenceGuide(analysis);
   referenceModal.hidden = false;
 }
@@ -75,6 +75,8 @@ export function stopReferenceResize() {
 }
 
 export function buildReferenceGuide(analysis) {
+  const preview = previewExampleGuide(analysis);
+  if (preview) return preview;
   const info = describeCompound(analysis);
   const substance = labState.compoundMeta?.commonName ? labState.compoundMeta : findKnownSubstance(displayFormula(analysis));
   const selectedAtom = labState.selectedAtomIds.length === 1 ? getAtom(labState.selectedAtomIds[0]) : null;
@@ -147,6 +149,48 @@ export function buildReferenceGuide(analysis) {
     <section class="safety-note">
       <h3>Безопасная граница</h3>
       <p>Это учебная модель. Она помогает понимать связи, валентности, устойчивость и классы веществ, но не заменяет SDS, лабораторный протокол, расчетный пакет или консультацию специалиста.</p>
+    </section>
+  `;
+}
+
+function previewExampleGuide(analysis) {
+  const formula = displayFormula(analysis);
+  const name = labState.compoundMeta?.commonName;
+  const counts = analysis.counts;
+  const water = name === "water" && formula === "H2O" && counts.H === 2 && counts.O === 1 && Object.keys(counts).length === 2;
+  const carbonDioxide = name === "carbon dioxide" && formula === "CO2" && counts.C === 1 && counts.O === 2 && Object.keys(counts).length === 2;
+  if (!water && !carbonDioxide) return "";
+  const observation = water
+    ? "The canvas draws one explicit oxygen atom; two hydrogens are implicit in this supported SMILES model. The H2O formula includes all three atoms."
+    : "The canvas draws one carbon and two oxygen atoms with two modeled C=O double bonds. The local catalog maps CO2 to O=C=O; a formula alone does not identify a unique structure in general.";
+  const exercise = water
+    ? "Select oxygen in the periodic table, enter H2O, then compare the explicit canvas atoms with the formula and inspector."
+    : "Enter CO2, then inspect the three explicit atoms, two modeled bonds and the formula shown in the inspector.";
+  return `
+    <section>
+      <h3>What this model shows</h3>
+      <p>${escapeHtml(observation)}</p>
+      <div class="reference-tags">
+        <span>formula ${escapeHtml(formula)}</span>
+        <span>model mass ${escapeHtml(formatNumber(analysis.mass))} g/mol</span>
+        <span>formal charge ${escapeHtml(signed(analysis.totalCharge, true))}</span>
+      </div>
+    </section>
+    <section>
+      <h3>Teaching prompt</h3>
+      <p>${escapeHtml(exercise)}</p>
+    </section>
+    <section>
+      <h3>Model checks</h3>
+      <p>The ${analysis.score}% score is a rule-based heuristic, not measured chemical stability. The 2D layout and displayed strain are schematic estimates, not validated physical energy.</p>
+      <div class="reference-split">
+        ${renderForceFieldCheck(analysis)}
+        ${renderRdkitCheck(labState.compoundMeta?.rdkit)}
+      </div>
+    </section>
+    <section class="safety-note">
+      <h3>Scope and safety</h3>
+      <p>Exploratory teaching prototype. It is not scientifically validated and not approved for student use. It does not predict reactions or provide laboratory or clinical guidance. Other reaction, isotope, coordination and biomolecular features remain outside this preview and require review.</p>
     </section>
   `;
 }
