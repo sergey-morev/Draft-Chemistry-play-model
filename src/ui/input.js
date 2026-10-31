@@ -12,7 +12,7 @@ import { logReaction, reactionResult } from "./journal.js";
 export function applyFormulaInput(rawFormula) {
   const resolved = resolveSubstanceInput(rawFormula);
   if (resolved.type === "smiles") {
-    if (formulaInput) formulaInput.value = resolved.label;
+    if (formulaInput) formulaInput.value = displayInputLabel(resolved.commonName, resolved.input, resolved.formula || resolved.smiles);
     if (smilesInput) smilesInput.value = resolved.smiles;
     applySmilesInput(resolved.smiles, resolved);
     return;
@@ -27,7 +27,7 @@ export function applyFormulaInput(rawFormula) {
   }
   const before = analyzeMolecule();
   buildMoleculeFromFormula(parsed.counts, parsed.formula, resolved);
-  if (formulaInput) formulaInput.value = resolved.commonName || resolved.displayFormula || parsed.formula;
+  if (formulaInput) formulaInput.value = displayInputLabel(resolved.commonName, resolved.input, resolved.displayFormula || parsed.formula);
   if (smilesInput) smilesInput.value = labState.compoundMeta?.smiles || "";
   analyzeAndRender();
   requestRdkitCheck();
@@ -53,7 +53,7 @@ export function applySmilesInput(rawSmiles, meta = null) {
   }
   const before = analyzeMolecule();
   buildMoleculeFromSmiles(parsed, smiles, resolved);
-  if (formulaInput) formulaInput.value = labState.compoundMeta.commonName || labState.compoundMeta.sourceFormula || smiles;
+  if (formulaInput) formulaInput.value = displayInputLabel(labState.compoundMeta.commonName, resolved.input, labState.compoundMeta.sourceFormula || smiles);
   if (smilesInput) smilesInput.value = smiles;
   analyzeAndRender();
   requestRdkitCheck();
@@ -63,4 +63,11 @@ export function applySmilesInput(rawSmiles, meta = null) {
     advice: ["Compare the heuristic assessment and RDKit reference check in the inspector.", "If RDKit is unavailable, the sandbox continues in local teaching mode."]
   }), before, labState.lastAnalysis);
   triggerReactionEffect(labState.lastAnalysis, { success: true, title: "SMILES built" });
+}
+
+function displayInputLabel(name, entered, fallback) {
+  const preferred = String(name || "").trim();
+  if (preferred && !/[А-Яа-яЁё]/.test(preferred)) return preferred;
+  const typed = String(entered || "").trim();
+  return typed && !/[А-Яа-яЁё]/.test(typed) ? typed : fallback;
 }
