@@ -45,28 +45,28 @@ export function inferRadius(group, period, category) {
 
 export function elementBrief(element) {
   if (element.brief) return element.brief;
-  if (element.symbol === "D") return "изотоп H: тяжелее, валентность 1";
-  if (element.symbol === "T") return "изотоп H: радиоактивная учебная метка";
-  if (element.symbol === "U") return "актинид: базово U-238, A− даёт U-235";
-  if (element.symbol === "C") return "строит органический скелет и кольца";
-  if (element.symbol === "O") return "даёт спирты, воду, оксиды и полярность";
-  if (element.symbol === "N") return "часто создаёт основания, амины и заряды";
-  if (element.symbol === "S") return "похожа на O, но крупнее и мягче";
-  if (element.category === "halogen") return "галоген: обычно 1 связь, хороший заместитель";
-  if (element.category === "noble") return "инертный газ: связи обычно нестабильны";
-  if (element.category === "transition") return "металл: переменные степени окисления";
-  if (element.category === "alkali") return "щелочной металл: легко отдаёт электрон";
-  if (element.category === "alkaline") return "щелочноземельный металл: обычно валентность 2";
-  return "можно настраивать валентность и изотопную массу";
+  if (element.symbol === "D") return "Hydrogen isotope: greater mass; model valence 1.";
+  if (element.symbol === "T") return "Radioactive hydrogen isotope; shown here as an illustrative label.";
+  if (element.symbol === "U") return "Actinide: U-238 by default; A− can display U-235 in this model.";
+  if (element.symbol === "C") return "Forms the backbone and rings of many organic structures.";
+  if (element.symbol === "O") return "Appears in water, alcohols and oxides, and can affect bond polarity.";
+  if (element.symbol === "N") return "Appears in amines and other nitrogen-containing structures; charge can vary.";
+  if (element.symbol === "S") return "Can appear in examples analogous to oxygen; it is larger and more polarizable.";
+  if (element.category === "halogen") return "Halogen: often forms one bond; used as a substituent in examples.";
+  if (element.category === "noble") return "Noble gas: bonding generally triggers a valence warning in this model.";
+  if (element.category === "transition") return "Transition metal: can have multiple oxidation states.";
+  if (element.category === "alkali") return "Alkali metal: readily forms a positive ion in many compounds.";
+  if (element.category === "alkaline") return "Alkaline-earth metal: commonly has oxidation state +2.";
+  return "The model lets you adjust valence and the displayed isotope mass.";
 }
 
 export function elementProfile(element) {
-  if (isRadioactiveElement(element.symbol)) return { kind: "radioactive", label: "радиоактивность", color: "#7d3cff" };
+  if (isRadioactiveElement(element.symbol)) return { kind: "radioactive", label: "radioactivity (illustrative)", color: "#7d3cff" };
   const phase = elementPhase(element.symbol);
-  if (phase === "gas") return { kind: "gas", label: "газ", color: "#2e9bff" };
-  if (phase === "liquid") return { kind: "liquid", label: "жидкость", color: "#12a6a6" };
-  if (isMetalElement(element)) return { kind: "metal", label: "металл", color: "#d18d00" };
-  return { kind: "solid", label: "неметалл/твердое", color: "#6f7782" };
+  if (phase === "gas") return { kind: "gas", label: "gas", color: "#2e9bff" };
+  if (phase === "liquid") return { kind: "liquid", label: "liquid", color: "#12a6a6" };
+  if (isMetalElement(element)) return { kind: "metal", label: "metal", color: "#d18d00" };
+  return { kind: "solid", label: "nonmetal/solid", color: "#6f7782" };
 }
 
 export function elementPhase(symbol) {
@@ -86,29 +86,29 @@ export function isRadioactiveElement(symbol) {
 
 export function elementStateDescription(element) {
   const profile = elementProfile(element);
-  const phaseText = elementPhase(element.symbol) === "gas" ? "газ при обычных условиях" : elementPhase(element.symbol) === "liquid" ? "жидкость при обычных условиях" : "обычно твердое вещество";
-  const metalText = isMetalElement(element) ? "металлический характер: проводимость, катионы, координационные связи" : "неметаллический/ковалентный характер: важны валентность и электроотрицательность";
-  const radio = isRadioactiveElement(element.symbol) ? " Радиоактивность показана только как визуальная ионизация, без практических ядерных параметров." : "";
-  return `${phaseText}; ${metalText}; эффект: ${profile.label}.${radio}`;
+  const phaseText = elementPhase(element.symbol) === "gas" ? "gas at ambient conditions" : elementPhase(element.symbol) === "liquid" ? "liquid at ambient conditions" : "generally a solid at ambient conditions";
+  const metalText = isMetalElement(element) ? "metallic character: topics include conductivity, cations and possible coordination bonds" : "nonmetallic/covalent character: valence and electronegativity are relevant";
+  const radio = isRadioactiveElement(element.symbol) ? " Radioactivity is represented only by a visual ionization effect, without practical nuclear parameters." : "";
+  return `${phaseText}; ${metalText}; model effect: ${profile.label}.${radio}`;
 }
 
 export function elementStudyUse(element) {
-  if (isRadioactiveElement(element.symbol)) return "Учебный интерес: изотопы, радиоактивность, ионизация, материалы и безопасная концептуальная ядерная физика.";
-  if (isMetalElement(element)) return "Учебный интерес: металлическая связь, ионы, оксиды, соли, координационные комплексы и катализ.";
-  if (elementPhase(element.symbol) === "gas") return "Учебный интерес: газообразные молекулы, давление, растворимость, окисление и восстановление.";
-  if (elementPhase(element.symbol) === "liquid") return "Учебный интерес: летучесть, поляризуемость, растворы и взаимодействия в жидкой фазе.";
-  return "Учебный интерес: ковалентные связи, валентность, функциональные группы и молекулярная геометрия.";
+  if (isRadioactiveElement(element.symbol)) return "Study topics: isotopes, radioactivity and illustrative ionization effects; no practical nuclear parameters are provided.";
+  if (isMetalElement(element)) return "Study topics: metallic bonding, ions, oxides, salts, coordination complexes and catalysis.";
+  if (elementPhase(element.symbol) === "gas") return "Study topics: gases, pressure, solubility, oxidation and reduction.";
+  if (elementPhase(element.symbol) === "liquid") return "Study topics: volatility, polarizability, solutions and liquid-phase interactions.";
+  return "Study topics: covalent bonds, valence, functional groups and molecular geometry.";
 }
 
 export function elementStudyTips(element) {
   if (element.symbol === "U") return [
-    "Нажмите U-демо для безопасной визуализации нейтронов и ионизации.",
-    "Не используйте модель как инструкцию: массы, обогащение и реальные условия цепной реакции намеренно не показываются.",
-    "Сравните U-238/U-235 через A± как идею изотопов, не как практический расчет."
+    "Open the U demo for an illustrative view of neutrons and ionization.",
+    "Do not use this model as an instruction: enrichment and real chain-reaction conditions are intentionally omitted.",
+    "Compare U-238 and U-235 with A± as an isotope concept, not a practical calculation."
   ];
-  if (isRadioactiveElement(element.symbol)) return ["Смотрите на эффект ионизации как на концепт.", "Не переносите параметры учебной модели в реальные вещества."];
-  if (isMetalElement(element)) return ["Попробуйте соединить с O, Cl или S.", "Проверьте заряд +1/+2/+3 и координационные связи.", "Сравните оксид и соль этого металла."];
-  if (elementPhase(element.symbol) === "gas") return ["Попробуйте образование H2O, CO2 или HCl.", "Обратите внимание на давление/летучесть как физическое свойство."];
-  if (elementPhase(element.symbol) === "liquid") return ["Проверьте взаимодействие с двойными связями или металлами.", "Следите за поляризуемостью и слабым взаимодействием."];
-  return ["Соберите молекулу и следите за валентностью.", "Добавьте O/N/S/галоген для функциональных групп."];
+  if (isRadioactiveElement(element.symbol)) return ["Treat the ionization effect as a concept illustration.", "Do not apply model parameters to real substances."];
+  if (isMetalElement(element)) return ["Try combining this element with O, Cl or S.", "Explore +1/+2/+3 charges and coordination bonds in the model.", "Compare a modeled oxide and salt of this metal."];
+  if (elementPhase(element.symbol) === "gas") return ["Try building H2O, CO2 or HCl.", "Consider pressure and volatility as physical properties."];
+  if (elementPhase(element.symbol) === "liquid") return ["Explore interactions with double bonds or metals.", "Consider polarizability and weak interactions."];
+  return ["Build a molecule and inspect its valence warnings.", "Add O, N, S or a halogen to explore functional groups."];
 }

@@ -12,31 +12,31 @@ import { logReaction, reactionResult } from "./journal.js";
 export function applyFormulaInput(rawFormula) {
   const resolved = resolveSubstanceInput(rawFormula);
   if (resolved.type === "smiles") {
-    if (formulaInput) formulaInput.value = resolved.label;
+    if (formulaInput) formulaInput.value = displayInputLabel(resolved.commonName, resolved.input, resolved.formula || resolved.smiles);
     if (smilesInput) smilesInput.value = resolved.smiles;
     applySmilesInput(resolved.smiles, resolved);
     return;
   }
   const parsed = parseFormula(resolved.formula);
   if (!parsed.ok) {
-    logReaction(reactionResult(false, "Формула не разобрана", parsed.error || resolved.error, {
-      advice: ["Пример записи: C8H11NO2, CH3CH2OH, Fe2(SO4)3, NaCl, «поваренная соль», «серная кислота», SMILES: CCO."]
+    logReaction(reactionResult(false, "Formula could not be parsed", parsed.error || resolved.error, {
+      advice: ["Examples: C8H11NO2, CH3CH2OH, Fe2(SO4)3, NaCl, table salt, sulfuric acid, or SMILES: CCO."]
     }), labState.lastAnalysis, labState.lastAnalysis);
-    triggerReactionEffect(labState.lastAnalysis, { success: false, title: "ошибка формулы" });
+    triggerReactionEffect(labState.lastAnalysis, { success: false, title: "formula error" });
     return;
   }
   const before = analyzeMolecule();
   buildMoleculeFromFormula(parsed.counts, parsed.formula, resolved);
-  if (formulaInput) formulaInput.value = resolved.commonName || resolved.displayFormula || parsed.formula;
+  if (formulaInput) formulaInput.value = displayInputLabel(resolved.commonName, resolved.input, resolved.displayFormula || parsed.formula);
   if (smilesInput) smilesInput.value = labState.compoundMeta?.smiles || "";
   analyzeAndRender();
   requestRdkitCheck();
-  logReaction(reactionResult(true, resolved.commonName ? "Вещество построено" : "Формула построена", `Создана модель ${resolved.commonName || parsed.formula}.`, {
+  logReaction(reactionResult(true, resolved.commonName ? "Substance built" : "Formula built", `Model created: ${resolved.commonName || parsed.formula}.`, {
     equation: parsed.formula,
     uses: resolved.note || formulaUseHint(parsed.counts, parsed.formula),
     advice: formulaBuildAdvice(parsed.counts)
   }), before, labState.lastAnalysis);
-  triggerReactionEffect(labState.lastAnalysis, { success: true, title: "формула построена" });
+  triggerReactionEffect(labState.lastAnalysis, { success: true, title: "formula built" });
 }
 
 export function applySmilesInput(rawSmiles, meta = null) {
@@ -44,23 +44,30 @@ export function applySmilesInput(rawSmiles, meta = null) {
   const smiles = String(resolved.smiles || rawSmiles || "").trim();
   const parsed = parseSimpleSmiles(smiles);
   if (!parsed.ok) {
-    logReaction(reactionResult(false, "SMILES не разобран", parsed.error, {
-      advice: ["Поддержаны базовые SMILES: CCO, c1ccccc1, O=C=O, OS(=O)(=O)O. Для сложных молекул RDKit проверит запись, если загрузился."]
+    logReaction(reactionResult(false, "SMILES could not be parsed", parsed.error, {
+      advice: ["Basic supported SMILES include CCO, c1ccccc1, O=C=O and OS(=O)(=O)O. If available, RDKit can check more complex notation."]
     }), labState.lastAnalysis, labState.lastAnalysis);
-    triggerReactionEffect(labState.lastAnalysis, { success: false, title: "ошибка SMILES" });
+    triggerReactionEffect(labState.lastAnalysis, { success: false, title: "SMILES error" });
     requestRdkitCheck(smiles, resolved);
     return;
   }
   const before = analyzeMolecule();
   buildMoleculeFromSmiles(parsed, smiles, resolved);
-  if (formulaInput) formulaInput.value = labState.compoundMeta.commonName || labState.compoundMeta.sourceFormula || smiles;
+  if (formulaInput) formulaInput.value = displayInputLabel(labState.compoundMeta.commonName, resolved.input, labState.compoundMeta.sourceFormula || smiles);
   if (smilesInput) smilesInput.value = smiles;
   analyzeAndRender();
   requestRdkitCheck();
-  logReaction(reactionResult(true, "SMILES построен", `Создана структура ${resolved.commonName || smiles}.`, {
+  logReaction(reactionResult(true, "SMILES structure built", `Structure created: ${resolved.commonName || smiles}.`, {
     equation: smiles,
-    uses: resolved.note || "SMILES задает не только состав, но и порядок связей: поэтому CCO, c1ccccc1 и O=C=O строятся точнее, чем по одной формуле.",
-    advice: ["Сравните блок «Наша учебная оценка» и «Проверка RDKit» справа.", "Если RDKit не загрузился, лаборатория продолжает работать в локальном учебном режиме."]
+    uses: resolved.note || "SMILES specifies connectivity as well as composition, so CCO, c1ccccc1 and O=C=O convey more structural information than a formula alone.",
+    advice: ["Compare the heuristic assessment and RDKit reference check in the inspector.", "If RDKit is unavailable, the sandbox continues in local teaching mode."]
   }), before, labState.lastAnalysis);
-  triggerReactionEffect(labState.lastAnalysis, { success: true, title: "SMILES построен" });
+  triggerReactionEffect(labState.lastAnalysis, { success: true, title: "SMILES built" });
+}
+
+function displayInputLabel(name, entered, fallback) {
+  const preferred = String(name || "").trim();
+  if (preferred && !/[А-Яа-яЁё]/.test(preferred)) return preferred;
+  const typed = String(entered || "").trim();
+  return typed && !/[А-Яа-яЁё]/.test(typed) ? typed : fallback;
 }

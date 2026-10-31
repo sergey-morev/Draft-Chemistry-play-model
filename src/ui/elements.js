@@ -17,10 +17,11 @@ export function renderPeriodicTable() {
     tile.style.setProperty("--group", element.group);
     tile.style.setProperty("--period", element.period);
     tile.style.background = element.color;
-    tile.title = `${element.name}: Z=${element.z}, валентности ${element.valences.join(", ")}`;
+    tile.title = `${element.name}: Z=${element.z}, valences ${element.valences.join(", ")}`;
+    tile.setAttribute("aria-label", `${element.name} (${element.symbol}), atomic number ${element.z}`);
     tile.innerHTML = `<small>${element.z}</small>${element.symbol}`;
     tile.classList.toggle("is-selected", element.symbol === labState.selectedElement);
-    const text = `${element.symbol} ${element.name}`.toLowerCase();
+    const text = [element.symbol, element.name, ...(element.legacyNames || [])].join(" ").toLowerCase();
     tile.classList.toggle("is-muted", query && !text.includes(query));
     tile.addEventListener("click", () => {
       labState.selectedElement = element.symbol;
@@ -38,8 +39,8 @@ export function renderSelectedElement() {
     <div class="big-symbol" style="background:${element.color}">${element.symbol}</div>
     <div>
       <strong>${element.name}</strong>
-      <span>Z=${element.z}; валентности ${element.valences.join(", ")}; χ=${formatNumber(element.electronegativity)}</span>
-      <span>радиус ${element.radius} пм; масса ${formatNumber(element.mass)}</span>
+      <span>Z=${element.z}; valences ${element.valences.join(", ")}; χ=${formatNumber(element.electronegativity)}</span>
+      <span>radius ${element.radius} pm; mass ${formatNumber(element.mass)}</span>
       <span>${elementBrief(element)}</span>
     </div>
   `;

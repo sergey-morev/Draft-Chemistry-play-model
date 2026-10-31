@@ -153,7 +153,7 @@ export function bindControls() {
     labState.selectedAtomIds = [];
     labState.selectedBondId = null;
     labState.pendingAtomId = null;
-    logReaction("Поле очищено.");
+    logReaction("Workspace cleared.");
     analyzeAndRender();
   });
 
@@ -204,9 +204,9 @@ export function bindControls() {
       syncCatalystButtons();
       analyzeAndRender();
       const analysis = analyzeMolecule();
-      logReaction(reactionResult(true, "Катализатор выбран", catalyst.hint, {
+      logReaction(reactionResult(true, "Catalyst selected", catalyst.hint, {
         equation: catalyst.label,
-        uses: "Катализатор меняет предпочтительную реакцию кнопки «▶ Всё», но сам не расходуется.",
+        uses: "The selected catalyst changes which rule the Reaction demo applies; the model does not consume the catalyst.",
         advice: [catalystAdvice(catalyst.id)]
       }), analysis, analysis);
     });
@@ -232,7 +232,7 @@ export function bindControls() {
     const button = document.createElement("button");
     button.className = "chip radioisotope-chip";
     button.textContent = preset.label;
-    button.title = `${preset.kind}; хелатор: ${preset.bestChelator}`;
+    button.title = `${preset.kind}; chelator: ${preset.bestChelator}`;
     button.addEventListener("click", () => {
       const before = analyzeMolecule();
       const result = addRadioisotopePreset(preset.id);
@@ -306,13 +306,13 @@ export function syncCatalystButtons() {
 }
 
 export function catalystLabel(id = labState.activeCatalyst) {
-  return catalysts.find((catalyst) => catalyst.id === id)?.label || "нет";
+  return catalysts.find((catalyst) => catalyst.id === id)?.label || "none";
 }
 
 export function catalystAdvice(id = labState.activeCatalyst) {
-  if (id === "ni" || id === "pd" || id === "pt") return "Подходит для C=C: кнопка «▶ Всё» добавит H и сделает связи насыщеннее.";
-  if (id === "acid") return "Подходит для алкенов: «▶ Всё» добавит H/OH и даст спиртовые фрагменты.";
-  if (id === "fecl3") return "Подходит для бензола: «▶ Всё» добавит Cl к ароматическому кольцу.";
-  if (id === "brhv") return "Подходит для C=C: «▶ Всё» раскроет двойные связи и добавит Br.";
-  return "Без катализатора «▶ Всё» сначала попробует стабилизировать молекулу и выбрать мягкую реакцию.";
+  if (id === "ni" || id === "pd" || id === "pt") return "In this demo, Reaction demo adds H across C=C bonds.";
+  if (id === "acid") return "In this demo, Reaction demo adds H/OH across alkene bonds to form alcohol fragments.";
+  if (id === "fecl3") return "In this demo, Reaction demo adds Cl to an aromatic ring.";
+  if (id === "brhv") return "In this demo, Reaction demo adds Br across C=C bonds.";
+  return "Without a catalyst, Reaction demo first tries to stabilize the model and select a simple transformation.";
 }

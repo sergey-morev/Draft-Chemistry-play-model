@@ -1,59 +1,47 @@
 # Chemistry Play Model
 
-**Private draft. Research and teaching prototype; not approved for student use.**
+An experimental, editable **2D molecular-construction sandbox** for exploring atoms, bonds, molecular sketches and illustrative interactions in a browser. This is a **capabilities preview**, not a scientifically validated chemistry simulator or a university teaching product.
 
-An editable 2D molecular sandbox: atoms, bonds, rings, formula/name input, a limited SMILES parser, coordination sketches, illustrative reactions, isotope controls, undo/redo, and an inspector.
+## What you can try
 
-The owner has requested a transition to an English-language university teaching tool, with a chemistry instructor as a prospective reviewer. This is an owner-reported collaboration, not institutional endorsement or completed scientific review. The instructor's identity, scope, references, and formal role are not yet recorded.
+- Enter a name or formula, inspect a schematic molecular graph, and edit atoms and bonds.
+- Explore element properties, illustrative reaction controls, isotope labels, the inspector, undo/redo and the in-app reference.
+- Four documented examples: `H2O`, `CO2`, `glucose` and `ethanol` (see [instructor preview](docs/INSTRUCTOR_PREVIEW.md)).
+- The main controls and reference path are in English. Some inherited Russian catalog descriptions remain and are explicitly marked as untranslated.
 
-## Start
+**Important scientific limits:** the displayed stability percentage is a rule-based heuristic, not experimental or thermodynamic stability. Layout strain is not physical energy. A formula alone cannot determine a unique molecular structure or stereochemistry. Reaction, coordination, isotope and biomolecular examples are sketches, not validated predictions. Do not use the tool for laboratory, medical or other safety-critical decisions or as an approved student curriculum.
 
-Requires Node.js 22 or newer. No runtime npm dependencies or build step.
+## Try it locally
 
-```sh
-npm test
-npm run test:transfer
-npm run preview
-```
+Requires Node.js 22 or later; no runtime npm dependencies or bundler.
 
-Open the localhost URL printed by the server, normally http://127.0.0.1:4180/. The server stays local to its host; file:// is not supported. On Windows, the included .bat launcher uses Node on PATH.
+1. Clone this repository and switch to the branch containing the latest sandbox implementation.
+2. Run `npm run preview`.
+3. Open the local URL printed by the server (normally `http://127.0.0.1:4180/`).
 
-Browser checks are optional: install an exact reviewed Playwright version in the test environment, install its Chromium, then run `npm run test:browser`. Locally observed Playwright: 1.62.1. Use PLAYWRIGHT_MODULE and CHEMISTRY_BROWSER_EXECUTABLE only when your test environment needs alternate paths; no laptop path is embedded.
+The preview is served only on the machine that starts it. A remote site URL exists **only after** GitHub Pages is separately enabled and confirmed; local test URLs and GitHub Actions success do not create a public site.
 
-## Status and evidence
+Software checks: `npm test`, `npm run test:transfer`, and `npm run test:browser` when a compatible browser test environment is available. Passing these checks verifies selected implementation behavior, **not** chemical accuracy. A direct `file://` launch is not the supported entry path.
 
-The current interface and inherited dictionaries are predominantly **Russian**. English translation and scientific cleanup are pending. English documentation must not be mistaken for an English application.
+## Source structure
 
-The scene uses a graph layout, not molecular dynamics. The displayed percentage is a heuristic, not thermodynamic stability; the strain value is not a measured energy. Formula alone does not identify an isomer. Some structures, masses, isotopes, reactions, proteins, and metal complexes are approximations or placeholders.
+- `src/chemistry/`: input interpretation, builders, properties and illustrative reactions.
+- `src/simulation/`: molecular graph, mutations, history and update orchestration.
+- `src/physics/`, `src/render/`, `src/ui/`: educational layout, rendering and user interface.
+- `src/services/`: local dictionaries and optional PubChem/RDKit integrations.
+- `src/data/` and `data/`: built-in and inherited substance/element data.
+- `audio/`, `vendor/`: local sound effects and icons.
 
-See [known limitations](docs/KNOWN_LIMITATIONS.md), [scientific review](docs/SCIENTIFIC_REVIEW.md), [architecture](docs/ARCHITECTURE.md), and [licensing](docs/PROVENANCE_AND_LICENSES.md). A passing software test is not scientific acceptance.
+PubChem lookup transmits the requested query to an external service; RDKit may load an external library on demand. These are optional, not required for the four local walkthroughs.
 
-## Source map
+## Review and rights
 
-- `src/chemistry/`: parsing, builders, reactions, properties, analysis.
-- `src/physics/`: DOM-free spring layout.
-- `src/simulation/`: graph, history, fragments, update orchestration.
-- `src/render/`: SVG, camera, effects, frames.
-- `src/ui/`: controls, inspector, reference dialog, workspace.
-- `src/services/`: local databases and optional PubChem/RDKit.
-- `src/data/`, `data/`: inherited dictionaries and element parameters.
-- `src/audio/`, `audio/`, `vendor/`: sound and local third-party icons.
-- `tests/`, `src/dev/`, `tools/`: verification and local preview.
+The project is intended for exploratory feedback on **capabilities, usability and educational possibilities**. A chemistry instructor may advise on examples and scientific limitations; no academic institution has endorsed the tool. A user-visible example is not evidence of educational effectiveness.
 
-The payload intentionally excludes laptop logs, old ZIPs, duplicate PM files, screenshots, and one-time migration scripts. Those remain in the private Drive recovery library.
+See [known limitations](docs/KNOWN_LIMITATIONS.md), [scientific review](docs/SCIENTIFIC_REVIEW.md), and [source and rights status](docs/PROVENANCE_AND_LICENSES.md). Some data provenance remains open. The included Lucide license notices must accompany any redistribution of those icons. Sound assets are described as procedurally generated in `audio/README.md`; that assertion is not independently verified here.
 
-## Recovery and authority
+Public availability of source code does **not** by itself grant permission to reuse it. No general open-source code or dataset license has been selected for this repository; third-party notices apply to their respective materials.
 
-Owner: Sergey Morev. Owner decides scope, collaborators, visibility, licensing, and release. Contributor/model suggestions remain PROPOSED.
+## Project governance
 
-Code truth belongs to the verified Git commit in this repository. The **sole mutable PM current state** is [CURRENT_STATE_LIVE on Drive](https://drive.google.com/file/d/12zAdjep7DVFZ9xf5g9uAdeXwd5TklRjY/view). Start with [the Project Anchor](https://drive.google.com/file/d/19wiMajvhvYhNrE8UQeGHpoPfZjjc0M6P/view), then LIVE, and activate other records using [the Router](https://drive.google.com/file/d/1ualr8W-ylQFr6UT1A8t_ruZd4aaa_K3t/view).
-
-If Drive is unavailable, read [the frozen handoff](docs/HANDOFF_SNAPSHOT.md) and report its age. Do not treat it as live authority. Do not authorize student deployment, scientific acceptance, sharing, or public release from a stale snapshot.
-
-The operating rules are adapted from [Allocortex](https://github.com/sergey-morev/allocortex), inspected at commit 5ad6e6388cc3faafce9f02bd80f57cd3789dc205. No dependency on another private project's governance is required.
-
-## Cloud handoff
-
-[Cloud setup and recovery](docs/CLOUD_RUNBOOK.md) explains the remaining environment step. Source availability on GitHub/Drive does not prove an environment has been published or a cloud task has run.
-
-Do not change this repository to public. First complete the release gates and obtain fresh owner authorization.
+The owner controls publication, licensing and external commitments. Historical recovery documentation reflects earlier private engineering stages, not current scientific validation or release approval. Technical source of truth is the Git commit and its associated software checks.

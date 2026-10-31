@@ -47,7 +47,7 @@ export function requestRdkitCheck(smiles = labState.compoundMeta?.smiles, meta =
     return;
   }
   if (!labState.rdkitModule) {
-    labState.compoundMeta.rdkit = { status: labState.rdkitStatus, smiles, notes: ["RDKit включается отдельно и загружается из внешнего CDN. Без него работает локальная учебная проверка."] };
+    labState.compoundMeta.rdkit = { status: labState.rdkitStatus, smiles, notes: ["RDKit is optional and loads from an external CDN only when enabled. The local teaching checks work without it."] };
     analyzeAndRender(false);
     return;
   }

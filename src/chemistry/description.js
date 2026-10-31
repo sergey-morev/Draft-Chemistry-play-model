@@ -7,7 +7,7 @@ import { formatCompactCount, signed, stabilityText } from "../utils/format.js";
 
 export function describeCompound(analysis) {
   const counts = analysis.counts;
-  const formula = displayFormula(analysis) || "пустая модель";
+  const formula = displayFormula(analysis) || "empty model";
   const c = counts.C || 0;
   const h = counts.H || 0;
   const d = counts.D || 0;
@@ -28,85 +28,85 @@ export function describeCompound(analysis) {
     .filter((atom) => (atom.isotopeShift || 0) !== 0)
     .slice(0, 3)
     .map((atom) => `${isotopeLabel(atom)} ${Math.round((atom.enrichment || 0) * 100)}%`);
-  const tags = [`формула ${formula}`, `${stabilityText(analysis.score)} ${analysis.score}%`, `кат. ${catalystLabel()}`];
+  const tags = [`formula ${formula}`, `${stabilityText(analysis.score)} ${analysis.score}%`, `catalyst: ${catalystLabel()}`];
   const tips = [];
-  let kind = "неорганическое";
-  let summary = "Короткая справка появится после добавления атомов.";
+  let kind = "inorganic";
+  let summary = "A short description will appear after you add atoms.";
 
   if (!labState.atoms.length) {
-    return { title: "Нет соединения", kind: "пусто", summary, tags: ["добавьте атом"], tips: ["Выберите элемент слева и поставьте его на поле."] };
+    return { title: "No compound", kind: "empty", summary, tags: ["add an atom"], tips: ["Select an element on the left, then place it in the workspace."] };
   }
 
   if (labState.compoundMeta?.commonName) {
-    kind = labState.compoundMeta.className || (labState.compoundMeta.condensed ? "биомакро" : "известное вещество");
-    summary = `${labState.compoundMeta.commonName}: ${labState.compoundMeta.note || "вещество из локального словаря лаборатории."}`;
-    tips.push("Можно вводить это вещество по русскому названию, формуле или SMILES.");
+    kind = labState.compoundMeta.className || (labState.compoundMeta.condensed ? "biomacromolecule sketch" : "known substance");
+    summary = `${labState.compoundMeta.commonName}: ${labState.compoundMeta.note || "substance from the local catalog."}`;
+    tips.push("You can enter this substance by its legacy Russian name, formula or supported SMILES.");
   } else if (hasChelator) {
-    kind = chelatedMetals.length ? "радиометалл-хелат" : "хелатор";
+    kind = chelatedMetals.length ? "radiometal chelate sketch" : "chelator sketch";
     summary = chelatedMetals.length
-      ? `Металл ${chelatedMetals.map((atom) => atom.radioisotope || isotopeLabel(atom)).join(", ")} удерживается N/O-донорами хелатора.`
-      : "Хелаторная клетка готова: добавьте Lu-177, Y-90, Cu-67, Ac-225 или другой радиометалл.";
-    tips.push("Нажмите M⊂Хелат, чтобы поместить выбранный металл внутрь координационной клетки.");
+      ? `The model places metal ${chelatedMetals.map((atom) => atom.radioisotope || isotopeLabel(atom)).join(", ")} among the chelator's N/O donors; real complex formation is not established.`
+      : "The chelator sketch is ready: try adding Lu-177, Y-90, Cu-67, Ac-225 or another modeled radiometal.";
+    tips.push("Use Place metal at center to put the selected metal in the coordination sketch.");
   } else if (labState.compoundMeta?.bioName && labState.compoundMeta.bioName !== "пользовательская формула") {
-    kind = labState.compoundMeta.condensed ? "биомакро" : "биоорганика";
-    summary = `${labState.compoundMeta.bioName}: ${labState.compoundMeta.condensed ? "показана компактная карта состава, атомов слишком много для полного рисунка." : "малая биоорганическая молекула построена как схема связей."}`;
-    tips.push("Меняйте формулу сверху или используйте Fe↔Cu для металл-содержащих вариантов.");
+    kind = labState.compoundMeta.condensed ? "biomacromolecule sketch" : "bio-organic sketch";
+    summary = `${labState.compoundMeta.bioName}: ${labState.compoundMeta.condensed ? "a compact composition map is shown because a full atom drawing would be too large." : "a small bio-organic structure is shown as a bond sketch."}`;
+    tips.push("Change the formula above, or use Fe↔Cu to explore modeled metal substitutions; biological equivalence is not implied.");
   } else if (o === 1 && c === 0 && h === 0 && d === 2 && t === 0) {
-    kind = "тяжелая вода";
-    summary = "D2O похожа на воду по валентности, но тяжелее из-за дейтерия.";
-    tips.push("Нажмите H↺, чтобы сравнить с обычной водой.");
+    kind = "heavy water";
+    summary = "D2O has the same modeled valence pattern as water, with greater mass from deuterium.";
+    tips.push("Use H↺ to compare it with ordinary water in the model.");
   } else if (o === 1 && c === 0 && t > 0) {
-    kind = "тритированная вода";
-    summary = "Изотопная вода с T показывает, где находится водородная метка.";
-    tips.push("T в реальности радиоактивен; здесь это только учебная метка.");
+    kind = "tritiated water";
+    summary = "Water containing T shows where the tritium label is placed in this model.";
+    tips.push("Tritium is radioactive; here it is only an illustrative label.");
   } else if (analysis.aromaticRings > 0) {
-    kind = halogensCount ? "галогенарен" : "ароматическое";
-    summary = halogensCount ? "Ароматическое кольцо с галогенным заместителем: полезный промежуточный фрагмент." : "Ароматическое кольцо стабилизировано делокализацией электронов.";
-    tips.push("Добавляйте заместители к свободным C-H и следите за валентностью C.");
+    kind = halogensCount ? "halogenated aromatic sketch" : "aromatic sketch";
+    summary = halogensCount ? "The model identifies an aromatic ring with a halogen substituent; its chemical role needs review." : "The model identifies an aromatic ring; electron delocalization is the relevant teaching concept.";
+    tips.push("Try adding substituents at available C-H positions and check carbon valence warnings.");
   } else if (c > 0 && hasTripleCC) {
-    kind = "алкин";
-    summary = "Есть тройная C≡C связь: фрагмент реакционно активен и линейнее по геометрии.";
-    tips.push("Можно гидрировать тройную связь пошагово, уменьшив порядок связи.");
+    kind = "alkyne";
+    summary = "Contains a C≡C triple bond; this fragment is modeled with a more nearly linear geometry.";
+    tips.push("Explore stepwise reduction of the triple-bond order as an illustrative hydrogenation exercise.");
   } else if (c > 0 && hasDoubleCC) {
-    kind = "алкен";
-    summary = "Есть двойная C=C связь: доступны гидрирование, бромирование и гидратация.";
-    tips.push("Попробуйте H2 + C=C, Br2 + C=C или H2O + C=C.");
+    kind = "alkene";
+    summary = "Contains a C=C double bond; the model offers illustrative hydrogenation, bromination and hydration examples.";
+    tips.push("Try the modeled H2 + C=C, Br2 + C=C or H2O + C=C examples.");
   } else if (c > 0 && hasOH) {
-    kind = "спирт/фенольный фрагмент";
-    summary = "Связь O-H повышает полярность и способность к водородным связям.";
-    tips.push("Замените H в O-H на D для изотопной метки.");
+    kind = "alcohol/phenol-like fragment";
+    summary = "An O-H bond can affect polarity and hydrogen-bonding behavior; the exact structure needs review.";
+    tips.push("Replace H in O-H with D to add a modeled isotope label.");
   } else if (c > 0) {
-    kind = "органическое";
-    summary = "Углеродный скелет с насыщенными связями: хорошая база для функциональных групп.";
-    tips.push("Добавьте O, N, галоген или C=C, чтобы получить более реакционный фрагмент.");
+    kind = "organic";
+    summary = "A carbon framework with single bonds can be used to explore functional groups.";
+    tips.push("Add O, N, a halogen or C=C to explore different modeled fragments.");
   } else {
-    summary = "Соединение без углеродного скелета; устойчивость зависит от валентностей и зарядов.";
-    tips.push("Проверьте, чтобы H/D/T имели только одну связь.");
+    summary = "This model has no carbon framework; its heuristic score depends in part on valence and charge.";
+    tips.push("Check whether H, D and T have no more than one modeled bond each.");
   }
 
   if (isotopeTotal > 0) {
-    tags.push(`изотопы D/T: ${isotopeTotal}`);
-    tips.push("D/T меняют массу, но в этой модели сохраняют валентность H.");
+    tags.push(`D/T isotopes: ${isotopeTotal}`);
+    tips.push("D/T change modeled mass while retaining hydrogen's modeled valence.");
   }
   if (isotopeLabels.length > 0) {
     tags.push(...isotopeLabels);
-    tips.push("A± меняет массовое число изотопа, V± меняет целевую валентность.");
+    tips.push("A± changes the displayed mass number; V± changes the target valence in this model.");
   }
   if (hasChelator) {
-    tags.push(chelatedMetals.length ? "металл в хелаторе" : "пустой хелатор");
-    tips.push("Хелатор показывает удержание металла, а не реальную инструкцию по синтезу или применению.");
+    tags.push(chelatedMetals.length ? "metal in chelator sketch" : "empty chelator sketch");
+    tips.push("The chelator view illustrates metal placement; it is not a synthesis or application guide.");
   }
   if (analysis.strainEnergy > 10) {
-    tags.push("напряжение");
-    tips.push("Запустите релаксацию ▶ или увеличьте расстояния между атомами.");
+    tags.push("layout strain estimate");
+    tips.push("Use Relax graph layout or increase the spacing between atoms in the drawing.");
   }
   if (analysis.totalCharge !== 0) {
-    tags.push(`заряд ${signed(analysis.totalCharge, true)}`);
-    tips.push("Снизьте заряд выбранного атома кнопками +/−.");
+    tags.push(`charge ${signed(analysis.totalCharge, true)}`);
+    tips.push("Adjust the selected atom's charge with +/− in the model.");
   }
   if (labState.compoundMeta?.condensed) {
-    tags.push(`атомов ${formatCompactCount(labState.compoundMeta.totalAtoms)}`);
-    tips.push("Кружки с ×N означают группы атомов этого элемента в большой формуле.");
+    tags.push(`atoms ${formatCompactCount(labState.compoundMeta.totalAtoms)}`);
+    tips.push("Circles marked ×N represent groups of that element in a large formula sketch.");
   }
   const stabilization = buildStabilizationSuggestions(analysis)[0];
   if (stabilization) tips.push(`${stabilization.title}: ${stabilization.text}`);

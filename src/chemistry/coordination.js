@@ -109,16 +109,16 @@ export function addCarboxylateArm(anchor, angle, chelatorId, type) {
 
 export function addRadioisotopePreset(id) {
   const preset = radioisotopePresets.find((item) => item.id === id);
-  if (!preset) return reactionResult(false, "Изотоп не найден", "Такого пресета нет в локальном справочнике.");
+  if (!preset) return reactionResult(false, "Isotope not found", "No such preset exists in the local reference.");
   if (isMetalAtom({ symbol: preset.symbol })) {
     if (findActiveChelator()) return chelateSelectedMetal(preset);
     const point = freeCenterPoint();
     const metal = addAtom(preset.symbol, point.x, point.y, preset.charge || 0);
     applyRadioisotope(metal, preset);
     labState.selectedAtomIds = [metal.id];
-    return reactionResult(true, "Радиометалл добавлен", `${preset.label}: сначала поставлен как отдельный ион; добавьте DOTA/DTPA/Macropa и нажмите M⊂Хелат.`, {
+    return reactionResult(true, "Radiometal added", `${preset.label}: placed as a separate ion in the model; add DOTA, DTPA or Macropa and press Place metal at center.`, {
       equation: preset.label,
-      advice: ["Для «скрытого металла» нужен хелаторный фрагмент: DOTA, DTPA или Macropa."]
+      advice: ["To sketch a metal in a chelator, add a DOTA, DTPA or Macropa fragment."]
     });
   }
   return attachRadiohalogen(preset);
@@ -217,9 +217,9 @@ export function attachRadiohalogen(preset) {
       structure: "fdg",
       note: "Фтор-18 заменяет одну OH-группу: учебная аналогия с диагностическим радиотрейсером."
     });
-    return reactionResult(true, "18F добавлен к глюкозе", "Построена учебная схема 18F-FDG.", {
-      equation: "глюкоза + 18F -> 18F-FDG",
-      advice: ["F-18 — неметалл: он не прячется в DOTA, а обычно показывается как ковалентная метка."]
+    return reactionResult(true, "18F added to glucose", "An illustrative 18F-FDG sketch was built.", {
+      equation: "glucose + 18F -> 18F-FDG",
+      advice: ["F-18 is a nonmetal; this example depicts it as a covalent label rather than a metal in DOTA."]
     });
   }
   const anchor = selectedAtoms().find((atom) => !isHydrogenLike(atom.symbol)) || labState.atoms.find((atom) => atom.symbol === "C") || null;
@@ -230,10 +230,10 @@ export function attachRadiohalogen(preset) {
   if (anchor) createOrUpdateBond(anchor.id, atom.id, 1);
   labState.selectedAtomIds = anchor ? [anchor.id, atom.id] : [atom.id];
   labState.selectedBondId = null;
-  return reactionResult(true, "Радиометка добавлена", `${preset.label}: ${preset.note}`, {
+  return reactionResult(true, "Radiolabel added", `${preset.label}: ${preset.note}`, {
     equation: anchor ? `R-H + ${preset.label} -> R-${preset.symbol}` : preset.label,
-    uses: "Неметаллические радионуклиды в учебной модели присоединяются к органическому фрагменту как метка.",
-    advice: ["Для металлов используйте DOTA/DTPA/Macropa и кнопку M⊂Хелат."]
+    uses: "In this illustrative model, a nonmetal radionuclide can be attached to an organic fragment as a label.",
+    advice: ["For metals, use DOTA, DTPA or Macropa and Place metal at center."]
   });
 }
 
