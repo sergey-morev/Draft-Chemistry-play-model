@@ -78,6 +78,9 @@ export function renderSelection(analysis) {
 export function renderCompoundInfo(analysis) {
   if (!compoundInfo) return;
   const info = describeCompound(analysis);
+  const title = labelLegacyText(info.title, "Catalog name");
+  const kind = labelLegacyText(info.kind, "Catalog class");
+  const summary = labelLegacyText(shortenText(info.summary, 118), "Catalog description");
   const tags = [
     `formula ${displayFormula(analysis) || analysis.formula || "none"}`,
     `${inspectorStabilityText(analysis.score)} ${analysis.score}%`,
@@ -87,10 +90,10 @@ export function renderCompoundInfo(analysis) {
   if (labState.compoundMeta?.rdkit?.formula) tags.push(`RDKit ${labState.compoundMeta.rdkit.formula}`);
   compoundInfo.innerHTML = `
     <div class="compound-title">
-      <strong>${escapeHtml(info.title)}</strong>
-      <span>${escapeHtml(info.kind)}</span>
+      <strong>${escapeHtml(title)}</strong>
+      <span>${escapeHtml(kind)}</span>
     </div>
-    <p>${escapeHtml(shortenText(info.summary, 118))}</p>
+    <p>${escapeHtml(summary)}</p>
     <p>Exploratory rule-based 2D schematic. Scores and geometry are not validated physical measurements or reaction predictions. Not approved for student use or laboratory or clinical decisions.</p>
     <div class="compound-tags">
       ${tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
@@ -100,6 +103,11 @@ export function renderCompoundInfo(analysis) {
       <button type="button" class="reference-wide scheme" data-expand-molecule>Expand diagram</button>
     </div>
   `;
+}
+
+function labelLegacyText(value, source) {
+  const text = String(value ?? "");
+  return /[А-Яа-яЁё]/.test(text) ? `Legacy Russian ${source.toLowerCase()} — translation in progress: ${text}` : text;
 }
 
 export function renderRdkitCheck(check) {

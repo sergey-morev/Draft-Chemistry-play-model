@@ -257,10 +257,10 @@ export function formulaUseHint(counts, formula) {
 }
 
 export function formulaBuildAdvice(counts) {
-  const advice = ["Для малых формул показана атомная схема, для больших — компактная карта состава."];
-  if (counts.C === 6 && counts.H === 12 && counts.O === 6) advice.push("Это похоже на глюкозу: нажмите «⛓ Схема», чтобы увидеть сахарное кольцо.");
-  if (counts.Fe || counts.Cu) advice.push("Кнопка Fe↔Cu заменит металл и перестроит модель.");
-  if ((counts.C || 0) > 20) advice.push("Для биомолекул удобнее менять формулу и металл через верхнее поле.");
+  const advice = ["Smaller formulas may show explicit atoms; larger examples may use a compact composition map."];
+  if (counts.C === 6 && counts.H === 12 && counts.O === 6) advice.push("For this catalog-mapped glucose example, use Expand diagram to inspect the schematic ring. The formula alone does not establish its structure.");
+  if (counts.Fe || counts.Cu) advice.push("Fe↔Cu changes the modeled metal and rebuilds the sketch; it does not establish a real analogue.");
+  if ((counts.C || 0) > 20) advice.push("For large biomolecular sketches, use the top field to change the formula or modeled metal. The drawing is not a validated structure.");
   return advice;
 }
 

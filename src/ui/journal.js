@@ -24,22 +24,27 @@ export function logReaction(result, before = null, after = null) {
   const afterFormula = after?.formula || "—";
   const advice = buildReactionAdvice(after, result);
   const equation = result.equation ? `<div class="reaction-equation">${escapeHtml(result.equation)}</div>` : "";
-  const uses = result.uses ? `<p>${escapeHtml(result.uses)}</p>` : "";
+  const uses = result.uses ? `<p>${escapeHtml(labelLegacyJournalText(result.uses))}</p>` : "";
   const formulaChange = beforeFormula === afterFormula ? afterFormula : `${beforeFormula} -> ${afterFormula}`;
 
   reactionLog.innerHTML = `
     <article class="reaction-card ${result.success ? state : "blocked"}">
       <div class="reaction-card-head">
-        <strong>${escapeHtml(result.title)}</strong>
+        <strong>${escapeHtml(labelLegacyJournalText(result.title))}</strong>
         <span>${result.success ? stabilityText(after?.score || 0) : "not performed"}</span>
       </div>
-      <p>${escapeHtml(result.summary)}</p>
+      <p>${escapeHtml(labelLegacyJournalText(result.summary))}</p>
       ${equation}
       <div class="reaction-formula">${escapeHtml(formulaChange)}</div>
       ${uses}
-      <ul>${advice.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      <ul>${advice.map((item) => `<li>${escapeHtml(labelLegacyJournalText(item))}</li>`).join("")}</ul>
     </article>
   `;
+}
+
+function labelLegacyJournalText(value) {
+  const text = String(value ?? "");
+  return /[А-Яа-яЁё]/.test(text) ? `Legacy Russian journal text — translation in progress: ${text}` : text;
 }
 
 export function buildReactionAdvice(analysis, result) {

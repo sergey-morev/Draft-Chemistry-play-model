@@ -12,7 +12,7 @@ import { clamp, escapeHtml, formatNumber, signed } from "../utils/format.js";
 
 export function openReferenceModal() {
   const analysis = labState.lastAnalysis || analyzeMolecule();
-  referenceTitle.textContent = labState.compoundMeta?.commonName || displayFormula(analysis) || "Substance properties";
+  referenceTitle.textContent = referenceText(labState.compoundMeta?.commonName || displayFormula(analysis) || "Substance properties");
   referenceBody.innerHTML = buildReferenceGuide(analysis);
   referenceModal.hidden = false;
 }
