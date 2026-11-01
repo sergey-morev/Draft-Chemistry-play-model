@@ -2,8 +2,52 @@ name: Software checks
 on: [push, pull_request]
 permissions:
   contents: read
+
 jobs:
+  commit-identity:
+    name: Commit identity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Verify attribution of commits after public-preview baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          baseline="54b7ca35f99f697d13aa6891ce97223129f84990"
+          expected_name="Sergey Morev, MD/PhD"
+          expected_email="smorev.research@gmail.com"
+          if ! git merge-base --is-ancestor "$baseline" HEAD; then
+            echo "::error::Branch is not based on the approved public-preview baseline. Rebase onto current main before review."
+            exit 1
+          fi
+          checked=0
+          while IFS= read -r rev; do
+            [[ -n "$rev" ]] || continue
+            checked=$((checked + 1))
+            an="$(git show -s --format=%an "$rev")"
+            ae="$(git show -s --format=%ae "$rev")"
+            cn="$(git show -s --format=%cn "$rev")"
+            ce="$(git show -s --format=%ce "$rev")"
+            if [[ "$an" != "$expected_name" || "$ae" != "$expected_email" ]]; then
+              echo "::error::Commit ${rev:0:12} has unexpected author name/email. Expected the owner's approved Git author; do not rewrite published history."
+              exit 1
+            fi
+            if ! { [[ "$cn" == "$expected_name" && "$ce" == "$expected_email" ]] || [[ "$cn" == "GitHub" && "$ce" == "noreply@github.com" ]]; }; then
+              echo "::error::Commit ${rev:0:12} has unexpected committer name/email."
+              exit 1
+            fi
+            if git show -s --format=%B "$rev" | grep -Eiq '^Co-authored-by:'; then
+              echo "::error::Commit ${rev:0:12} has a co-author trailer; obtain explicit owner approval before attributing additional contributors."
+              exit 1
+            fi
+          done < <(git rev-list --reverse "$baseline"..HEAD)
+          echo "Commit identity check passed for $checked new commit(s). Historical commits at/before baseline are grandfathered."
+
   core:
+    name: Core and transfer tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
